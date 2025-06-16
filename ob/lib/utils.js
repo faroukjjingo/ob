@@ -1,6 +1,7 @@
-
-import slugify from 'slugify';
-
+// lib/utils.js
 export function generateSlug(title) {
-  return slugify(title, { lower: true, strict: true });
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '');
 }
