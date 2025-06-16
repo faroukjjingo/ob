@@ -1,7 +1,6 @@
-
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import styles from '../styles/OpportunityDetail.module.css';
+import styles from '../styles/Home.module.css';
 import { db } from '../lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
@@ -20,14 +19,14 @@ export default function Home({ grants }) {
   }, [grants]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={styles.container}>
       <h1 className={styles.title}>Grant Opportunities</h1>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className={styles.grid}>
         {filteredGrants.map((grant) => (
-          <div key={grant.id} className="bg-surface shadow-md rounded-lg p-6">
-            <h2 className="text-xl font-semibold">{grant.title}</h2>
-            <p className="text-text-secondary mt-2">{grant.category} - {grant.location}</p>
-            <p className="mt-2">Deadline: {new Date(grant.deadline).toLocaleDateString()}</p>
+          <div key={grant.id} className={styles.card}>
+            <h2 className={styles.cardTitle}>{grant.title}</h2>
+            <p className={styles.cardSubtitle}>{grant.category} - {grant.location}</p>
+            <p className={styles.cardDeadline}>Deadline: {new Date(grant.deadline).toLocaleDateString()}</p>
             <Link href={`/grants/${grant.slug}`} className={styles.primaryButton}>
               View Details
             </Link>
