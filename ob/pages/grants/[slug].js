@@ -1,4 +1,4 @@
-project/pages/grants/[slug].js
+
 import styles from '../../styles/OpportunityDetail.module.css';
 
 export async function getStaticPaths() {
