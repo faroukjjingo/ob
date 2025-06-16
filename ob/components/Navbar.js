@@ -1,3 +1,4 @@
+// components/Navbar.js
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
@@ -16,6 +17,7 @@ import {
   Lightbulb,
   TrendingUp,
 } from 'lucide-react';
+import styles from './Navbar.module.css';
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,7 +52,7 @@ export default function Sidebar() {
     <>
       {/* Hamburger Button for Mobile */}
       <button
-        className="fixed top-4 left-4 z-50 md:hidden text-gray-800"
+        className={styles.hamburger}
         onClick={toggleMenu}
         aria-label="Toggle menu"
       >
@@ -59,20 +61,24 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-white shadow-lg z-40 transform transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } w-64 md:translate-x-0 md:static md:w-64 md:flex md:flex-col md:min-h-screen`}
+        className={`${styles.sidebar} ${
+          isOpen ? styles.sidebarOpen : styles.sidebarClosed
+        }`}
       >
         {/* Logo */}
-        <div className="p-4 border-b">
-          <Link href="/" className="flex items-center justify-center">
-            <img src="/logo.png" alt="Opportunity Board Logo" className="h-8" />
+        <div className={styles.logoContainer}>
+          <Link href="/" className={styles.logo}>
+            <img
+              src="/logo.png"
+              alt="Opportunity Board Logo"
+              className={styles.logoImage}
+            />
           </Link>
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 overflow-y-auto">
-          <div className="flex flex-col space-y-2 p-4">
+        <nav className={styles.nav}>
+          <div className={styles.navList}>
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -80,10 +86,10 @@ export default function Sidebar() {
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center space-x-3 p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition-colors"
+                  className={styles.navItem}
                 >
                   <Icon size={20} />
-                  <span className="text-sm font-medium">{item.name}</span>
+                  <span className={styles.navText}>{item.name}</span>
                 </Link>
               );
             })}
@@ -92,12 +98,7 @@ export default function Sidebar() {
       </div>
 
       {/* Overlay for Mobile */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
-          onClick={toggleMenu}
-        />
-      )}
+      {isOpen && <div className={styles.overlay} onClick={toggleMenu} />}
     </>
   );
 }
