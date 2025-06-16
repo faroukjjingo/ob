@@ -1,19 +1,37 @@
 /* OpportunityDetail.module.css */
 
-/* Container for the whole page */
+/* General container for the page */
 .container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 8px; /* Minimized padding */
-  font-family: 'Arial', sans-serif;
-  background-color: #fafafa;
+  padding: 8px; /* Minimal padding for a compact layout */
+  font-family: 'Inter', Arial, sans-serif;
+  background-color: #f9f9f9;
   color: #333;
+  line-height: 1.6;
 }
 
-/* Hero section content */
-.heroContent {
+/* Title styles */
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #222;
   text-align: center;
   margin-bottom: 16px;
+}
+
+/* Subtitle or secondary text */
+.subtitle {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+/* Hero section */
+.heroContent {
+  text-align: center;
+  margin-bottom: 24px;
 }
 
 /* Hero image */
@@ -21,38 +39,54 @@
   max-width: 100%;
   height: auto;
   border-radius: 12px;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Title styles */
-.title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 4px;
-  color: #222;
+/* Form container */
+.form {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Consistent spacing between form elements */
 }
 
-/* Subtitle styles */
-.subtitle {
+/* Input fields */
+.inputField {
+  width: 100%;
+  padding: 8px 12px; /* Minimal padding for compactness */
   font-size: 1rem;
-  color: #555;
-  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Primary button */
+.inputField:focus {
+  border-color: #0070f3;
+  box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.2);
+  outline: none;
+}
+
+/* Textarea fields */
+textarea.inputField {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Buttons */
 .primaryButton {
-  display: inline-block;
-  background-color: #0070f3;
+  padding: 10px 16px;
+  font-size: 1rem;
+  font-weight: bold;
   color: white;
-  padding: 6px 12px; /* Minimized padding */
+  background-color: #0070f3;
   border: none;
   border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background-color 0.3s, transform 0.2s;
+  cursor: pointer;
   text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .primaryButton:hover {
@@ -60,46 +94,48 @@
   transform: scale(1.02);
 }
 
-/* Details section */
-.details {
-  margin-top: 16px;
-  line-height: 1.6;
+.deleteButton {
+  padding: 10px 16px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background-color: #d9534f;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Section title */
+.deleteButton:hover {
+  background-color: #c9302c;
+  transform: scale(1.02);
+}
+
+/* Button group for actions */
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 16px; /* Consistent spacing between buttons */
+}
+
+/* Details section */
+.details {
+  margin-top: 20px;
+  padding: 10px 12px;
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Section titles within details */
 .sectionTitle {
   font-size: 1.4rem;
   font-weight: 600;
-  margin-top: 16px;
-  margin-bottom: 4px;
   color: #111;
-}
-
-/* Input fields */
-.inputField {
-  width: 100%;
-  padding: 6px 10px; /* Minimized padding */
-  font-size: 0.9rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 12px;
-  background-color: #fff;
-  transition: border-color 0.3s;
-}
-
-.inputField:focus {
-  outline: none;
-  border-color: #0070f3;
-  box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
-}
-
-/* Form layout */
-.form {
-  max-width: 600px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  margin-top: 16px;
+  margin-bottom: 8px;
 }
 
 /* Responsive design */
@@ -109,16 +145,21 @@
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
   .subtitle {
     font-size: 0.9rem;
   }
 
-  .primaryButton {
-    font-size: 0.8rem;
-    padding: 4px 8px;
+  .form {
+    gap: 8px;
+  }
+
+  .primaryButton,
+  .deleteButton {
+    font-size: 0.9rem;
+    padding: 8px 12px;
   }
 
   .sectionTitle {
