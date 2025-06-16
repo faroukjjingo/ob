@@ -1,9 +1,9 @@
 // pages/admin/grants/create.js
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Update to next/navigation
+import { useRouter } from 'next/navigation';
 import styles from '../../../styles/OpportunityDetail.module.css';
-import { auth } from '../../../lib/firebase'; // Import auth
+import { auth } from '../../../lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
 export default function CreateGrant() {
