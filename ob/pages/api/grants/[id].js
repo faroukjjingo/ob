@@ -1,4 +1,4 @@
-
+// project/pages/api/grants/[id].js
 import { db } from '../../../lib/firebase';
 import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { generateSlug } from '../../../lib/utils';
