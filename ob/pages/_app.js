@@ -1,8 +1,7 @@
-
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import '../styles/globals.css';
+import '../styles/globals.css'; // Refer to global styles
 import { FirebaseProvider } from '../lib/firebase';
 
 export default function App({ Component, pageProps }) {
@@ -14,7 +13,7 @@ export default function App({ Component, pageProps }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <main className="min-h-screen bg-background">
+      <main className="main-container">
         <Component {...pageProps} />
       </main>
       <Footer />
