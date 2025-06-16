@@ -1,15 +1,18 @@
-project/pages/admin/grants/edit/[id].js
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../../../../styles/OpportunityDetail.module.css';
+import { auth, db } from '../../../../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export async function getServerSideProps({ params }) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/grants/${params.id}`);
-  const grant = await res.json();
-  if (res.status !== 200) {
+  const grantDoc = doc(db, 'grants', params.id);
+  const docSnap = await getDoc(grantDoc);
+  if (!docSnap.exists()) {
     return { notFound: true };
   }
-  return { props: { grant } };
+  return { props: { grant: { id: docSnap.id, ...docSnap.data() } } };
 }
 
 export default function EditGrant({ grant }) {
@@ -28,8 +31,20 @@ export default function EditGrant({ grant }) {
     deadline: new Date(grant.deadline).toISOString().slice(0, 16),
     media: grant.media,
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
   const { id } = router.query;
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        router.push('/admin');
+      } else {
+        setIsAuthenticated(true);
+      }
+    });
+    return () => unsubscribe();
+  }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,6 +64,10 @@ export default function EditGrant({ grant }) {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
