@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../../../styles/OpportunityDetail.module.css';
 import { auth } from '../../../lib/firebase';
