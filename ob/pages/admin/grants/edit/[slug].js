@@ -1,10 +1,10 @@
-// project/pages/admin/grants/edit/[slug].js
+// pages/admin/grants/edit/[slug].js
+'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import styles from '../../../../styles/OpportunityDetail.module.css';
-import { auth, db } from '../../../../lib/firebase';
+import { db } from '../../../../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
 
 export async function getServerSideProps({ params }) {
   const grantDoc = doc(db, 'grants', params.slug);
@@ -33,32 +33,45 @@ export default function EditGrant({ grant }) {
   });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
-  const { slug } = router.query;
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        router.push('/admin');
-      } else {
-        setIsAuthenticated(true);
-      }
-    });
-    return () => unsubscribe();
+    const storedAuth = localStorage.getItem('adminAuthenticated');
+    if (storedAuth !== 'true') {
+      router.push('/admin');
+    } else {
+      setIsAuthenticated(true);
+    }
   }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch(`/api/grants/${grant.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-    router.push('/admin');
+    try {
+      const res = await fetch(`/api/grants/${grant.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        router.push('/admin');
+      } else {
+        console.error('Failed to update grant');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const handleDelete = async () => {
-    await fetch(`/api/grants/${grant.id}`, { method: 'DELETE' });
-    router.push('/admin');
+    try {
+      const res = await fetch(`/api/grants/${grant.id}`, { method: 'DELETE' });
+      if (res.ok) {
+        router.push('/admin');
+      } else {
+        console.error('Failed to delete grant');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const handleChange = (e) => {
