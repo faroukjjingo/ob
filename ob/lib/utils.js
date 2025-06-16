@@ -1,4 +1,4 @@
-project/lib/utils.js
+
 import slugify from 'slugify';
 
 export function generateSlug(title) {
