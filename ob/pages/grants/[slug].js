@@ -1,33 +1,49 @@
 import styles from '../../styles/OpportunityDetail.module.css';
 
 export async function getStaticPaths() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/grants`);
-  const grants = await res.json();
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/grants`);
+    if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+    
+    const grants = await res.json();
 
-  const paths = grants.map((grant) => ({
-    params: { slug: grant.slug.toString() },
-  }));
+    const paths = grants.map((grant) => ({
+      params: { slug: grant.slug.toString() },
+    }));
 
-  return {
-    paths,
-    fallback: 'blocking',
-  };
+    return {
+      paths,
+      fallback: 'blocking',
+    };
+  } catch (error) {
+    console.error('Error in getStaticPaths:', error);
+    return {
+      paths: [],
+      fallback: 'blocking',
+    };
+  }
 }
 
 export async function getStaticProps({ params }) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/grants`);
-  const grants = await res.json();
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/grants`);
+    if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
 
-  const grant = grants.find((g) => g.slug === params.slug);
+    const grants = await res.json();
+    const grant = grants.find((g) => g.slug === params.slug);
 
-  if (!grant || new Date(grant.deadline) < new Date()) {
+    if (!grant || new Date(grant.deadline) < new Date()) {
+      return { notFound: true };
+    }
+
+    return {
+      props: { grant },
+      revalidate: 60,
+    };
+  } catch (error) {
+    console.error('Error in getStaticProps:', error);
     return { notFound: true };
   }
-
-  return {
-    props: { grant },
-    revalidate: 60, // ISR: revalidate every 60 seconds
-  };
 }
 
 export default function GrantDetail({ grant }) {
@@ -49,7 +65,12 @@ export default function GrantDetail({ grant }) {
         </p>
         <p>Organizer: {grant.organizerName}</p>
         <p>Deadline: {new Date(grant.deadline).toLocaleDateString()}</p>
-        <a href={grant.link} className={styles.primaryButton} target="_blank" rel="noopener noreferrer">
+        <a
+          href={grant.link}
+          className={styles.primaryButton}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Apply Now
         </a>
       </div>
