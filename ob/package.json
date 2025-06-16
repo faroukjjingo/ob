@@ -1,0 +1,21 @@
+project/package.json
+{
+  "name": "grant-website",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "proper-lockfile": "^4.1.2",
+    "slugify": "^1.6.6",
+    "tailwindcss": "latest",
+    "autoprefixer": "latest",
+    "postcss": "latest"
+  },
+  "devDependencies": {}
+}
