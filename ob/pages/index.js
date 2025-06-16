@@ -7,25 +7,31 @@ import { db } from '../lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
 export async function getStaticProps() {
-  const grantsCol = collection(db, 'grants');
-  const grantsSnapshot = await getDocs(grantsCol);
-  const grants = grantsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  return { props: { grants }, revalidate: 60 };
+  try {
+    const grantsCol = collection(db, 'grants');
+    const grantsSnapshot = await getDocs(grantsCol);
+    const grants = grantsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return { props: { grants }, revalidate: 60 };
+  } catch (error) {
+    console.error('Error fetching grants:', error);
+    return { props: { grants: [] }, revalidate: 60 };
+  }
 }
 
 export default function Home({ grants }) {
-  const [filteredGrants, setFilteredGrants] = useState(grants);
+  const [filteredGrants, setFilteredGrants] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
+    console.log('Initial grants:', grants); // Debug log
     setFilteredGrants(
       grants.filter((grant) => {
-        const isActive = new Date(grant.deadline) > new Date();
+        const isActive = grant.deadline ? new Date(grant.deadline) > new Date() : true;
         const matchesSearch = 
-          grant.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          grant.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          grant.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          grant.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+          (grant.title?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+          (grant.category?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+          (grant.location?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+          (grant.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())) || false);
         return isActive && matchesSearch;
       })
     );
@@ -67,20 +73,20 @@ export default function Home({ grants }) {
               <div className={styles.cardContent}>
                 <h2 className={styles.cardTitle}>{grant.title}</h2>
                 <p className={styles.cardSubtitle}>
-                  {grant.category} - {grant.location}
+                  {grant.category || 'N/A'} - {grant.location || 'N/A'}
                 </p>
                 <p className={styles.cardDeadline}>
-                  Deadline: {new Date(grant.deadline).toLocaleDateString()}
+                  Deadline: {grant.deadline ? new Date(grant.deadline).toLocaleDateString() : 'N/A'}
                 </p>
                 <p className={styles.cardDescription}>
-                  {grant.description.length > 100
+                  {grant.description?.length > 100
                     ? `${grant.description.slice(0, 100)}...`
-                    : grant.description}
+                    : grant.description || 'No description available'}
                 </p>
                 <div className={styles.cardTags}>
-                  {grant.tags.map((tag, index) => (
+                  {(grant.tags || []).map((tag, index) => (
                     <span key={index} className={styles.tag}>
-                      {tag}
+                      {tag || 'N/A'}
                     </span>
                   ))}
                 </div>
