@@ -1,8 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../../../styles/OpportunityDetail.module.css';
-import { useAuth } from '../../../context/AuthContext'; // Use the AuthProvider context
+import { useAuth } from '../../../context/AuthContext';
 
 export default function CreateGrant() {
   const [form, setForm] = useState({
@@ -20,14 +20,15 @@ export default function CreateGrant() {
     deadline: '',
     media: '',
   });
-  const { user } = useAuth(); // Access the user from AuthProvider context
+  const { user } = useAuth();
   const router = useRouter();
 
-  // Redirect if not logged in
-  if (!user) {
-    router.push('/admin');
-    return null;
-  }
+  // Redirect if not logged in (runs only on client side)
+  useEffect(() => {
+    if (!user) {
+      router.push('/admin');
+    }
+  }, [user, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,6 +43,11 @@ export default function CreateGrant() {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  // Render nothing or a loading state while redirecting
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className={styles.container}>
