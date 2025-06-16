@@ -1,8 +1,10 @@
+// pages/admin/grants/create.js
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation'; // Update to next/navigation
 import styles from '../../../styles/OpportunityDetail.module.css';
-import { useAuth } from '../../../context/AuthContext';
+import { auth } from '../../../lib/firebase'; // Import auth
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function CreateGrant() {
   const [form, setForm] = useState({
@@ -20,31 +22,45 @@ export default function CreateGrant() {
     deadline: '',
     media: '',
   });
-  const { user } = useAuth();
+  const [user, setUser] = useState(null);
   const router = useRouter();
 
-  // Redirect if not logged in (runs only on client side)
   useEffect(() => {
-    if (!user) {
-      router.push('/admin');
-    }
-  }, [user, router]);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      if (!currentUser) {
+        router.push('/admin');
+      }
+    });
+    return () => unsubscribe();
+  }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch('/api/grants', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-    router.push('/admin');
+    if (!user) {
+      router.push('/admin');
+      return;
+    }
+    try {
+      const res = await fetch('/api/grants', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        router.push('/admin');
+      } else {
+        console.error('Failed to create grant');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Render nothing or a loading state while redirecting
   if (!user) {
     return <div>Loading...</div>;
   }
