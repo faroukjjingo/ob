@@ -1,4 +1,4 @@
-project/components/Navbar.js
+
 import Link from 'next/link';
 import styles from '../styles/OpportunityDetail.module.css';
 
