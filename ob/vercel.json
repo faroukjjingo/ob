@@ -1,0 +1,9 @@
+project/vercel.json
+{
+  "crons": [
+    {
+      "path": "/api/grants/cleanup",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
