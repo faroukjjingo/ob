@@ -1,0 +1,180 @@
+project/pages/admin/grants/edit/[id].js
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import styles from '../../../../styles/OpportunityDetail.module.css';
+
+export async function getServerSideProps({ params }) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/grants/${params.id}`);
+  const grant = await res.json();
+  if (res.status !== 200) {
+    return { notFound: true };
+  }
+  return { props: { grant } };
+}
+
+export default function EditGrant({ grant }) {
+  const [form, setForm] = useState({
+    title: grant.title,
+    description: grant.description,
+    link: grant.link,
+    category: grant.category,
+    location: grant.location,
+    eligibility: grant.eligibility,
+    tags: grant.tags.join(', '),
+    publishedDate: new Date(grant.publishedDate).toISOString().slice(0, 16),
+    organizerName: grant.organizerName,
+    applicationProcess: grant.applicationProcess,
+    contactEmail: grant.contactEmail,
+    deadline: new Date(grant.deadline).toISOString().slice(0, 16),
+    media: grant.media,
+  });
+  const router = useRouter();
+  const { id } = router.query;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await fetch(`/api/grants/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+    router.push('/admin');
+  };
+
+  const handleDelete = async () => {
+    await fetch(`/api/grants/${id}`, { method: 'DELETE' });
+    router.push('/admin');
+  };
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className={styles.title}>Edit Grant</h1>
+      <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-4">
+        <input
+          type="text"
+          name="title"
+          placeholder="Title"
+          value={form.title}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={form.description}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <input
+          type="url"
+          name="link"
+          placeholder="Link"
+          value={form.link}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <input
+          type="text"
+          name="category"
+          placeholder="Category"
+          value={form.category}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <input
+          type="text"
+          name="location"
+          placeholder="Location"
+          value={form.location}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <textarea
+          name="eligibility"
+          placeholder="Eligibility"
+          value={form.eligibility}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <input
+          type="text"
+          name="tags"
+          placeholder="Tags (comma-separated)"
+          value={form.tags}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <input
+          type="datetime-local"
+          name="publishedDate"
+          value={form.publishedDate}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <input
+          type="text"
+          name="organizerName"
+          placeholder="Organizer Name"
+          value={form.organizerName}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <textarea
+          name="applicationProcess"
+          placeholder="Application Process"
+          value={form.applicationProcess}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <input
+          type="email"
+          name="contactEmail"
+          placeholder="Contact Email"
+          value={form.contactEmail}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <input
+          type="datetime-local"
+          name="deadline"
+          value={form.deadline}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <input
+          type="url"
+          name="media"
+          placeholder="Media URL"
+          value={form.media}
+          onChange={handleChange}
+          className="bg-surface shadow-sm w-full"
+          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+        />
+        <div className="flex gap-4">
+          <button type="submit" className={styles.primaryButton}>
+            Update Grant
+          </button>
+          <button type="button" onClick={handleDelete} className="bg-red-500 text-white px-4 py-2 rounded-md">
+            Delete Grant
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
