@@ -1,8 +1,7 @@
-
+// lib/firebase.js
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import { createContext, useContext } from 'react';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,9 +15,3 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-
-const FirebaseContext = createContext(null);
-export const FirebaseProvider = ({ children }) => {
-  return <FirebaseContext.Provider value={{ auth, db }}>{children}</FirebaseContext.Provider>;
-};
-export const useFirebase = () => useContext(FirebaseContext);
