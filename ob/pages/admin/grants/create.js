@@ -1,7 +1,9 @@
-project/pages/admin/grants/create.js
+
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../../../styles/OpportunityDetail.module.css';
+import { auth } from '../../../lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function CreateGrant() {
   const [form, setForm] = useState({
@@ -19,7 +21,19 @@ export default function CreateGrant() {
     deadline: '',
     media: '',
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        router.push('/admin');
+      } else {
+        setIsAuthenticated(true);
+      }
+    });
+    return () => unsubscribe();
+  }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,6 +48,10 @@ export default function CreateGrant() {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
