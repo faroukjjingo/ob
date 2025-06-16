@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../../../styles/OpportunityDetail.module.css';
-import { auth } from '../../../lib/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useAuth } from '../../../context/AuthContext'; // Use the AuthProvider context
 
 export default function CreateGrant() {
   const [form, setForm] = useState({
@@ -20,19 +19,14 @@ export default function CreateGrant() {
     deadline: '',
     media: '',
   });
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user } = useAuth(); // Access the user from AuthProvider context
   const router = useRouter();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        router.push('/admin');
-      } else {
-        setIsAuthenticated(true);
-      }
-    });
-    return () => unsubscribe();
-  }, [router]);
+  // Redirect if not logged in
+  if (!user) {
+    router.push('/admin');
+    return null;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,10 +41,6 @@ export default function CreateGrant() {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
-  if (!isAuthenticated) {
-    return null;
-  }
 
   return (
     <div className={styles.container}>
