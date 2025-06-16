@@ -1,56 +1,127 @@
 /* OpportunityDetail.module.css */
 
+/* Container for the whole page */
 .container {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 8px; /* Minimized padding */
+  font-family: 'Arial', sans-serif;
+  background-color: #fafafa;
+  color: #333;
 }
 
+/* Hero section content */
 .heroContent {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
+/* Hero image */
 .heroImage {
   max-width: 100%;
   height: auto;
-  border-radius: 8px;
-  margin-bottom: 16px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Title styles */
 .title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 8px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #222;
 }
 
+/* Subtitle styles */
 .subtitle {
-  color: #6b7280; /* Replace text-text-secondary */
-  font-size: 1.2rem;
-  margin-bottom: 16px;
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 12px;
 }
 
+/* Primary button */
 .primaryButton {
   display: inline-block;
   background-color: #0070f3;
   color: white;
-  padding: 8px 16px;
+  padding: 6px 12px; /* Minimized padding */
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
   text-decoration: none;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s, transform 0.2s;
+  text-align: center;
 }
 
 .primaryButton:hover {
   background-color: #005bb5;
+  transform: scale(1.02);
 }
 
+/* Details section */
 .details {
-  margin-top: 32px;
+  margin-top: 16px;
+  line-height: 1.6;
 }
 
+/* Section title */
 .sectionTitle {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-top: 24px;
-  margin-bottom: 8px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-top: 16px;
+  margin-bottom: 4px;
+  color: #111;
+}
+
+/* Input fields */
+.inputField {
+  width: 100%;
+  padding: 6px 10px; /* Minimized padding */
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  background-color: #fff;
+  transition: border-color 0.3s;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: #0070f3;
+  box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+}
+
+/* Form layout */
+.form {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    padding: 4px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .primaryButton {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+
+  .sectionTitle {
+    font-size: 1.2rem;
+  }
 }
