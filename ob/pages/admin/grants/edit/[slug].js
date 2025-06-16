@@ -70,25 +70,23 @@ export default function EditGrant({ grant }) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={styles.container}>
       <h1 className={styles.title}>Edit Grant</h1>
-      <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-4">
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="text"
           name="title"
           placeholder="Title"
           value={form.title}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
         <textarea
           name="description"
           placeholder="Description"
           value={form.description}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
         <input
           type="url"
@@ -96,8 +94,7 @@ export default function EditGrant({ grant }) {
           placeholder="Link"
           value={form.link}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
         <input
           type="text"
@@ -105,8 +102,7 @@ export default function EditGrant({ grant }) {
           placeholder="Category"
           value={form.category}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
         <input
           type="text"
@@ -114,16 +110,14 @@ export default function EditGrant({ grant }) {
           placeholder="Location"
           value={form.location}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
         <textarea
           name="eligibility"
           placeholder="Eligibility"
           value={form.eligibility}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
         <input
           type="text"
@@ -131,16 +125,14 @@ export default function EditGrant({ grant }) {
           placeholder="Tags (comma-separated)"
           value={form.tags}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
         <input
           type="datetime-local"
           name="publishedDate"
           value={form.publishedDate}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
         <input
           type="text"
@@ -148,16 +140,14 @@ export default function EditGrant({ grant }) {
           placeholder="Organizer Name"
           value={form.organizerName}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
         <textarea
           name="applicationProcess"
           placeholder="Application Process"
           value={form.applicationProcess}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
         <input
           type="email"
@@ -165,16 +155,14 @@ export default function EditGrant({ grant }) {
           placeholder="Contact Email"
           value={form.contactEmail}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
         <input
           type="datetime-local"
           name="deadline"
           value={form.deadline}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
         <input
           type="url"
@@ -182,14 +170,17 @@ export default function EditGrant({ grant }) {
           placeholder="Media URL"
           value={form.media}
           onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+          className={styles.inputField}
         />
-        <div className="flex gap-4">
+        <div className={styles.buttonGroup}>
           <button type="submit" className={styles.primaryButton}>
             Update Grant
           </button>
-          <button type="button" onClick={handleDelete} className="bg-red-500 text-white px-4 py-2 rounded-md">
+          <button
+            type="button"
+            onClick={handleDelete}
+            className={styles.deleteButton}
+          >
             Delete Grant
           </button>
         </div>
