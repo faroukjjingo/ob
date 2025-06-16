@@ -1,22 +1,21 @@
 {
   "name": "grant-website",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "firebase": "latest",
-    "slugify": "^1.6.6",
-    "tailwindcss": "latest",
-    "@tailwindcss/postcss": "latest",
-    "autoprefixer": "latest",
-    "postcss": "latest",
-    "lucide-react": "latest",
-    "classnames": "latest"
+    "lucide-react": "^0.319.0",
+    "next": "15.3.3",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "eslint": "8.58.0",
+    "eslint-config-next": "15.3.3"
   }
 }
