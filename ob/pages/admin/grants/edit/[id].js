@@ -1,4 +1,4 @@
-
+// project/pages/admin/grants/edit/[slug].js
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../../../../styles/OpportunityDetail.module.css';
@@ -7,7 +7,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 
 export async function getServerSideProps({ params }) {
-  const grantDoc = doc(db, 'grants', params.id);
+  const grantDoc = doc(db, 'grants', params.slug);
   const docSnap = await getDoc(grantDoc);
   if (!docSnap.exists()) {
     return { notFound: true };
@@ -33,7 +33,7 @@ export default function EditGrant({ grant }) {
   });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
-  const { id } = router.query;
+  const { slug } = router.query;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -48,7 +48,7 @@ export default function EditGrant({ grant }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch(`/api/grants/${id}`, {
+    await fetch(`/api/grants/${grant.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
@@ -57,7 +57,7 @@ export default function EditGrant({ grant }) {
   };
 
   const handleDelete = async () => {
-    await fetch(`/api/grants/${id}`, { method: 'DELETE' });
+    await fetch(`/api/grants/${grant.id}`, { method: 'DELETE' });
     router.push('/admin');
   };
 
