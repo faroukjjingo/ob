@@ -1,40 +1,56 @@
+/* OpportunityDetail.module.css */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
 
 .heroContent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   text-align: center;
-  padding: var(--space-md);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-md);
+  margin-bottom: 24px;
 }
 
 .heroImage {
   max-width: 100%;
   height: auto;
-  border-radius: var(--radius-sm);
-  margin-bottom: var(--space-md);
+  border-radius: 8px;
+  margin-bottom: 16px;
 }
 
 .title {
   font-size: 2rem;
   font-weight: bold;
-  color: var(--color-text-primary);
-  margin-bottom: var(--space-sm);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: #6b7280; /* Replace text-text-secondary */
+  font-size: 1.2rem;
+  margin-bottom: 16px;
 }
 
 .primaryButton {
   display: inline-block;
-  background-color: var(--color-primary);
+  background-color: #0070f3;
   color: white;
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-sm);
-  font-weight: 500;
-  transition: background-color 0.2s;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
 .primaryButton:hover {
-  background-color: #4338ca;
-  text-decoration: none;
+  background-color: #005bb5;
+}
+
+.details {
+  margin-top: 32px;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 24px;
+  margin-bottom: 8px;
 }
