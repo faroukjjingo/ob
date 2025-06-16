@@ -1,4 +1,4 @@
-
+// project/pages/admin/index.js
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../../styles/OpportunityDetail.module.css';
@@ -108,7 +108,7 @@ export default function AdminDashboard() {
               <h3 className="text-lg font-medium">{grant.title}</h3>
               <p className="text-text-secondary">Deadline: {new Date(grant.deadline).toLocaleDateString()}</p>
             </div>
-            <Link href={`/admin/grants/edit/${grant.id}`} className={styles.primaryButton}>
+            <Link href={`/admin/grants/edit/${grant.slug}`} className={styles.primaryButton}>
               Edit
             </Link>
           </div>
