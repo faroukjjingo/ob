@@ -1,25 +1,26 @@
+// pages/admin/index.js
+'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import styles from '../../styles/AdminDashboard.module.css';
 import Link from 'next/link';
-import { auth } from '../../lib/firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { db } from '../../lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
 export default function AdminDashboard() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [passcode, setPasscode] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState('');
   const [grants, setGrants] = useState([]);
   const router = useRouter();
 
+  const HARDCODED_PASSCODE = 'X7kP9mQ2'; // Hardcoded passcode
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAuthenticated(!!user);
-    });
-    return () => unsubscribe();
+    const storedAuth = localStorage.getItem('adminAuthenticated');
+    if (storedAuth === 'true') {
+      setIsAuthenticated(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -35,28 +36,20 @@ export default function AdminDashboard() {
     }
   }, [isAuthenticated]);
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    try {
-      const res = await fetch('/api/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      if (res.ok) {
-        setIsAuthenticated(true);
-        setError('');
-      } else {
-        setError('Invalid credentials');
-      }
-    } catch (error) {
-      setError('Login failed');
+    if (passcode === HARDCODED_PASSCODE) {
+      setIsAuthenticated(true);
+      localStorage.setItem('adminAuthenticated', 'true');
+      setError('');
+    } else {
+      setError('Invalid passcode');
     }
   };
 
-  const handleLogout = async () => {
-    await signOut(auth);
+  const handleLogout = () => {
     setIsAuthenticated(false);
+    localStorage.removeItem('adminAuthenticated');
     router.push('/admin');
   };
 
@@ -66,17 +59,10 @@ export default function AdminDashboard() {
         <h1 className={styles.title}>Admin Login</h1>
         <form onSubmit={handleLogin} className={styles.form}>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className={styles.inputField}
-          />
-          <input
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            value={passcode}
+            onChange={(e) => setPasscode(e.target.value)}
+            placeholder="Enter Passcode"
             className={styles.inputField}
           />
           {error && <p className={styles.errorText}>{error}</p>}
