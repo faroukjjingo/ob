@@ -1,4 +1,4 @@
-project/components/Footer.js
+
 export default function Footer() {
   return (
     <footer className="bg-surface shadow-md py-4 mt-auto">
