@@ -1,35 +1,22 @@
-project/pages/api/grants/index.js
-import fs from 'fs/promises';
-import path from 'path';
-import { lock } from 'proper-lockfile';
-import slugify from 'slugify';
 
-const dataFile = path.join(process.cwd(), 'data/grants.json');
-
-async function getGrants() {
-  try {
-    const data = await fs.readFile(dataFile, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      await fs.writeFile(dataFile, '[]');
-      return [];
-    }
-    throw error;
-  }
-}
+import { db } from '../../../lib/firebase';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { generateSlug } from '../../../lib/utils';
 
 export default async function handler(req, res) {
-  try {
-    const release = await lock(dataFile, { retries: 5 });
-    let grants = await getGrants();
+  const grantsCol = collection(db, 'grants');
 
-    if (req.method === 'GET') {
-      const now = new Date();
-      grants = grants.filter((grant) => new Date(grant.deadline) > now);
+  if (req.method === 'GET') {
+    try {
+      const grantsSnapshot = await getDocs(grantsCol);
+      const grants = grantsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
       res.status(200).json(grants);
-    } else if (req.method === 'POST') {
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
+    }
+  } else if (req.method === 'POST') {
+    try {
       const {
         title,
         description,
@@ -46,15 +33,14 @@ export default async function handler(req, res) {
         media,
       } = req.body;
       const newGrant = {
-        id: String(Date.now()),
         title,
-        slug: slugify(title, { lower: true, strict: true }),
+        slug: generateSlug(title),
         description,
         link,
         category,
         location,
         eligibility,
-        tags: tags.split(',').map((t) => t.trim()),
+        tags: tags.split(',').map(t => t.trim()),
         publishedDate: publishedDate || new Date().toISOString(),
         organizerName,
         applicationProcess,
@@ -64,16 +50,13 @@ export default async function handler(req, res) {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      grants.push(newGrant);
-      await fs.writeFile(dataFile, JSON.stringify(grants, null, 2));
-      res.status(201).json(newGrant);
-    } else {
-      res.setHeader('Allow', ['GET', 'POST']);
-      res.status(405).end(`Method ${req.method} Not Allowed`);
+      const docRef = await addDoc(grantsCol, newGrant);
+      res.status(201).json({ id: docRef.id, ...newGrant });
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
     }
-  } catch (error) {
-    res.status(500).json({ error: 'Server error' });
-  } finally {
-    await release();
+  } else {
+    res.setHeader('Allow', ['GET', 'POST']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
