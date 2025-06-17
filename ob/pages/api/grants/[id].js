@@ -1,4 +1,3 @@
-// project/pages/api/grants/[id].js
 import { db } from '../../../lib/firebase';
 import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { generateSlug } from '../../../lib/utils';
@@ -47,13 +46,13 @@ export default async function handler(req, res) {
         category,
         location,
         eligibility,
-        tags: tags.split(',').map(t => t.trim()),
+        tags: Array.isArray(tags) ? tags : [],
         publishedDate,
-        organizerName,
-        applicationProcess,
+        organizerName: organizerName || '',
+        applicationProcess: applicationProcess || '',
         contactEmail,
         deadline,
-        media,
+        media: media || '',
         updatedAt: new Date().toISOString(),
       };
       await updateDoc(grantDoc, updatedGrant);
