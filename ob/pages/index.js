@@ -5,6 +5,7 @@ import Link from 'next/link';
 import styles from '../styles/Home.module.css';
 import { db } from '../lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import GrantCard from '../components/GrantCard';
 
 export async function getStaticProps() {
   try {
@@ -23,7 +24,7 @@ export default function Home({ grants }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    console.log('Initial grants:', grants); // Debug log
+    console.log('Initial grants:', grants);
     setFilteredGrants(
       grants.filter((grant) => {
         const isActive = grant.deadline ? new Date(grant.deadline) > new Date() : true;
@@ -56,45 +57,7 @@ export default function Home({ grants }) {
           <p className={styles.noResults}>No grants match your search.</p>
         ) : (
           filteredGrants.map((grant) => (
-            <div key={grant.id} className={styles.card}>
-              <div className={styles.cardImageWrapper}>
-                {grant.media ? (
-                  <img
-                    src={grant.media}
-                    alt={grant.title}
-                    className={styles.cardImage}
-                  />
-                ) : (
-                  <div className={styles.cardImagePlaceholder}>
-                    No Image
-                  </div>
-                )}
-              </div>
-              <div className={styles.cardContent}>
-                <h2 className={styles.cardTitle}>{grant.title}</h2>
-                <p className={styles.cardSubtitle}>
-                  {grant.category || 'N/A'} - {grant.location || 'N/A'}
-                </p>
-                <p className={styles.cardDeadline}>
-                  Deadline: {grant.deadline ? new Date(grant.deadline).toLocaleDateString() : 'N/A'}
-                </p>
-                <p className={styles.cardDescription}>
-                  {grant.description?.length > 100
-                    ? `${grant.description.slice(0, 100)}...`
-                    : grant.description || 'No description available'}
-                </p>
-                <div className={styles.cardTags}>
-                  {(grant.tags || []).map((tag, index) => (
-                    <span key={index} className={styles.tag}>
-                      {tag || 'N/A'}
-                    </span>
-                  ))}
-                </div>
-                <Link href={`/grants/${grant.slug}`} className={styles.primaryButton}>
-                  View Details
-                </Link>
-              </div>
-            </div>
+            <GrantCard key={grant.id} grant={grant} />
           ))
         )}
       </div>
