@@ -1,6 +1,7 @@
+// EventsPage.jsx
 import { useState, useEffect } from 'react';
 import GrantCard from '../../components/GrantCard';
-
+import styles from './EventsPage.module.css';
 
 export default function EventsPage() {
   const [grants, setGrants] = useState([]);
