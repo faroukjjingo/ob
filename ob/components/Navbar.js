@@ -31,7 +31,6 @@ export default function Navbar() {
     { name: 'Jobs', href: '/jobs', icon: Briefcase },
     { name: 'Internships', href: '/internships', icon: FileText },
     { name: 'Fellowships', href: '/fellowships', icon: Lightbulb },
-    { name: 'Career Tips', href: '/career-tips', icon: TrendingUp },
   ];
 
   const toggleMenu = () => {
