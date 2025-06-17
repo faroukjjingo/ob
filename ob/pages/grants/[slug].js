@@ -1,3 +1,4 @@
+// pages/grants/[slug].js
 import styles from '../../styles/OpportunityDetail.module.css';
 
 export async function getStaticPaths() {
@@ -53,18 +54,20 @@ export default function GrantDetail({ grant }) {
     <div className={styles.container}>
       <div className={styles.heroContent}>
         {grant.media && (
-          <img
-            src={grant.media}
-            alt={grant.title}
-            className={styles.heroImage}
-          />
+          <div className={styles.heroImageWrapper}>
+            <img
+              src={grant.media}
+              alt={grant.title}
+              className={styles.heroImage}
+            />
+          </div>
         )}
         <h1 className={styles.title}>{grant.title}</h1>
         <p className={styles.subtitle}>
-          {grant.category} - {grant.location}
+          {grant.category} | {grant.location}
         </p>
-        <p>Organizer: {grant.organizerName}</p>
-        <p>Deadline: {new Date(grant.deadline).toLocaleDateString()}</p>
+        <p className={styles.meta}>Organizer: {grant.organizerName}</p>
+        <p className={styles.meta}>Deadline: {new Date(grant.deadline).toLocaleDateString()}</p>
         <a
           href={grant.link}
           className={styles.primaryButton}
@@ -77,23 +80,27 @@ export default function GrantDetail({ grant }) {
 
       <div className={styles.details}>
         <h2 className={styles.sectionTitle}>Description</h2>
-        <p>{grant.description}</p>
+        <div className={styles.content}>{grant.description}</div>
 
         <h2 className={styles.sectionTitle}>Eligibility</h2>
-        <p>{grant.eligibility}</p>
+        <div className={styles.content}>{grant.eligibility}</div>
 
         <h2 className={styles.sectionTitle}>Application Process</h2>
-        <p>{grant.applicationProcess}</p>
+        <div className={styles.content}>{grant.applicationProcess}</div>
 
         <h2 className={styles.sectionTitle}>Contact</h2>
-        <p>
-          Email: <a href={`mailto:${grant.contactEmail}`}>{grant.contactEmail}</a>
+        <p className={styles.content}>
+          Email: <a href={`mailto:${grant.contactEmail}`} className={styles.emailLink}>{grant.contactEmail}</a>
         </p>
 
         {grant.tags && grant.tags.length > 0 && (
           <>
             <h2 className={styles.sectionTitle}>Tags</h2>
-            <p>{grant.tags.join(', ')}</p>
+            <div className={styles.tags}>
+              {grant.tags.map((tag, index) => (
+                <span key={index} className={styles.tag}>{tag}</span>
+              ))}
+            </div>
           </>
         )}
       </div>
