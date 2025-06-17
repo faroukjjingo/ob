@@ -37,6 +37,7 @@ export default async function handler(req, res) {
         contactEmail,
         deadline,
         media,
+        updatedAt,
       } = req.body;
       const updatedGrant = {
         title,
@@ -53,7 +54,7 @@ export default async function handler(req, res) {
         contactEmail,
         deadline,
         media: media || '',
-        updatedAt: new Date().toISOString(),
+        updatedAt: updatedAt || new Date().toISOString(),
       };
       await updateDoc(grantDoc, updatedGrant);
       res.status(200).json({ id, ...updatedGrant });
