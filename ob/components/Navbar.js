@@ -32,7 +32,6 @@ export default function Navbar() {
     { name: 'Internships', href: '/internships', icon: FileText },
     { name: 'Fellowships', href: '/fellowships', icon: Lightbulb },
     { name: 'Events', href: '/events', icon: Calendar },
-    { name: 'Global Opportunities', href: '/global', icon: Globe },
     { name: 'Career Tips', href: '/career-tips', icon: TrendingUp },
   ];
 
