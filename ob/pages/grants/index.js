@@ -21,7 +21,7 @@ export default function JobsPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Jobs</h1>
+      <h1 className={styles.title}>Grants</h1>
       <div className={styles.grid}>
         {grants.map(grant => (
           <GrantCard key={grant.id} grant={grant} />
