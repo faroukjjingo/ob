@@ -1,4 +1,3 @@
-// pages/admin/index.js
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -14,7 +13,7 @@ export default function AdminDashboard() {
   const [grants, setGrants] = useState([]);
   const router = useRouter();
 
-  const HARDCODED_PASSCODE = 'X7kP9mQ2'; // Hardcoded passcode
+  const HARDCODED_PASSCODE = 'X7kP9mQ2';
 
   useEffect(() => {
     const storedAuth = localStorage.getItem('adminAuthenticated');
@@ -26,11 +25,15 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (isAuthenticated) {
       const fetchGrants = async () => {
-        const grantsCol = collection(db, 'grants');
-        const grantsSnapshot = await getDocs(grantsCol);
-        setGrants(
-          grantsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-        );
+        try {
+          const grantsCol = collection(db, 'grants');
+          const grantsSnapshot = await getDocs(grantsCol);
+          setGrants(
+            grantsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+          );
+        } catch (error) {
+          console.error('Error fetching grants:', error);
+        }
       };
       fetchGrants();
     }
@@ -96,7 +99,7 @@ export default function AdminDashboard() {
               </p>
             </div>
             <Link
-              href={`/admin/grants/edit/${grant.slug}`}
+              href={`/admin/grants/edit/${grant.id}`}
               className={styles.primaryButton}
             >
               Edit
