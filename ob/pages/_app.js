@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }) {
   return (
     <AuthProvider>
       <Head>
-        <title>Grant Website</title>
+        <title>Opportunity Scout</title>
         <meta name="description" content="Grant opportunities" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
