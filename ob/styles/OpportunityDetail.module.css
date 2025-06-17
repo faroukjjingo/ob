@@ -1,26 +1,31 @@
 /* styles/OpportunityDetail.module.css */
 .container {
-  max-width: 100%;
-  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
-  box-sizing: border-box;
+  padding: var(--space-md);
+  background: var(--color-background);
+  min-height: calc(100vh - 80px);
 }
 
 .heroContent {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .heroImageWrapper {
   width: 100%;
-  max-width: 600px;
-  height: 200px;
+  max-width: 800px;
+  height: 300px;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .heroImage {
@@ -29,72 +34,96 @@
   object-fit: cover;
   object-position: center;
   display: block;
+  transition: transform var(--transition-normal);
+}
+
+.heroImage:hover {
+  transform: scale(1.02);
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1f2937;
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
   margin: 0;
   text-align: center;
-  line-height: 1.3;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
 }
 
 .metaGroup {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
   align-items: center;
 }
 
 .meta {
-  font-size: 0.9rem;
-  color: #6b7280;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  background: var(--color-surface-hover);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
   margin: 0;
 }
 
 .primaryButton {
-  background: #111827;
+  background: var(--color-primary);
   color: #ffffff;
-  padding: 0.5rem 1.25rem;
-  border-radius: 6px;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 600;
   text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: background 0.2s ease;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid transparent;
 }
 
 .primaryButton:hover {
-  background: #374151;
+  background: var(--color-accent);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.primaryButton:active {
+  transform: translateY(0);
 }
 
 .details {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-lg);
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--space-xs);
 }
 
 .label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #1f2937;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
 }
 
 .quillViewer {
-  font-size: 0.9rem;
-  color: #4b5563;
-  line-height: 1.5;
-  background: #ffffff;
-  border-radius: 6px;
-  padding: 0.5rem;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-xs);
 }
 
 .quillViewer :global(.ql-container) {
@@ -103,110 +132,197 @@
 
 .quillViewer :global(.ql-editor) {
   padding: 0;
-  font-size: 0.9rem;
-  color: #4b5563;
-  line-height: 1.5;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
 }
 
 .content {
-  font-size: 0.9rem;
-  color: #4b5563;
-  line-height: 1.5;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
   margin: 0;
 }
 
 .emailLink {
-  color: #111827;
+  color: var(--color-accent);
   text-decoration: none;
+  font-weight: 500;
 }
 
 .emailLink:hover {
   text-decoration: underline;
+  color: var(--color-primary);
 }
 
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
 .tag {
-  background: #f3f4f6;
-  color: #1f2937;
-  font-size: 0.8rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+  font-size: 0.85rem;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
   text-transform: capitalize;
+  transition: all var(--transition-fast);
 }
 
-/* Responsive adjustments */
-@media (min-width: 768px) {
-  .container {
-    padding: 1.5rem;
-  }
-
-  .title {
-    font-size: 1.75rem;
-  }
-
-  .heroImageWrapper {
-    height: 250px;
-  }
-
-  .label {
-    font-size: 1rem;
-  }
-
-  .quillViewer,
-  .content {
-    font-size: 1rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container {
-    padding: 2rem;
-  }
-
-  .title {
-    font-size: 2rem;
-  }
-
-  .heroImageWrapper {
-    height: 300px;
-  }
+.tag:hover {
+  background: var(--color-accent);
+  color: #ffffff;
 }
 
 /* Form styles for admin pages */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  max-width: 800px;
+  gap: var(--space-lg);
+  max-width: 900px;
   margin: 0 auto;
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .inputField {
-  padding: 0.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
   width: 100%;
   box-sizing: border-box;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  transition: all var(--transition-fast);
+}
+
+.inputField:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .quillEditor {
-  background: #ffffff;
-  border-radius: 6px;
-  min-height: 120px;
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  min-height: 150px;
+  box-shadow: var(--shadow-xs);
+}
+
+.quillEditor :global(.ql-container) {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.quillEditor :global(.ql-editor) {
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  line-height: 1.6;
 }
 
 .selectField {
-  font-size: 0.9rem;
+  font-size: 1rem;
+}
+
+.selectField :global(.css-1s2u09g-control),
+.selectField :global(.css-1pahdxg-control) {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+  transition: all var(--transition-fast);
+}
+
+.selectField :global(.css-1s2u09g-control:hover),
+.selectField :global(.css-1pahdxg-control:hover) {
+  border-color: var(--color-border-hover);
+}
+
+.selectField :global(.css-1s2u09g-control:focus),
+.selectField :global(.css-1pahdxg-control:focus) {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .errorText {
   color: #dc2626;
-  font-size: 0.8rem;
-  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  margin-top: var(--space-xs);
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .container {
+    padding: var(--space-lg);
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .heroImageWrapper {
+    height: 350px;
+  }
+
+  .label {
+    font-size: 1.1rem;
+  }
+
+  .quillViewer,
+  .content {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: var(--space-xl);
+  }
+
+  .title {
+    font-size: 3rem;
+  }
+
+  .heroImageWrapper {
+    height: 400px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .heroContent,
+  .details,
+  .form {
+    background: var(--color-surface);
+  }
+
+  .heroImageWrapper {
+    box-shadow: var(--shadow-md);
+  }
+
+  .inputField,
+  .quillEditor {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+  }
+
+  .selectField :global(.css-1s2u09g-control),
+  .selectField :global(.css-1pahdxg-control) {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+  }
+
+  .tag {
+    background: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
+  .tag:hover {
+    background: var(--color-accent);
+    color: #ffffff;
+  }
 }
