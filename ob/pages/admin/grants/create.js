@@ -5,21 +5,10 @@ import dynamic from 'next/dynamic';
 import styles from '../../../styles/OpportunityDetail.module.css';
 import 'react-quill/dist/quill.snow.css';
 import Select from 'react-select';
+import { categories } from '../../../categories';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
-const categories = [
-  { value: 'youth', label: 'Youth' },
-  { value: 'research', label: 'Research' },
-  { value: 'scholarships', label: 'Scholarships' },
-  { value: 'community', label: 'Community Development' },
-  { value: 'education', label: 'Education' },
-  { value: 'health', label: 'Health' },
-  { value: 'environment', label: 'Environment' },
-  { value: 'technology', label: 'Technology' },
-  { value: 'arts', label: 'Arts & Culture' },
-  { value: 'social_justice', label: 'Social Justice' },
-];
 
 const locations = [
   { value: 'north_america', label: 'North America' },
