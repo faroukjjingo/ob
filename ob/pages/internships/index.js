@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import GrantCard from '../../components/GrantCard';
-import styles from '../../styles/Internships.module.css';
 
 export default function InternshipsPage() {
   const [grants, setGrants] = useState([]);
