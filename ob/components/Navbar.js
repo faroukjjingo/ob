@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import styles from './Navbar.module.css';
 
-export default function Sidebar() {
+export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
@@ -50,23 +50,9 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Hamburger Button for Mobile */}
-      <button
-        className={styles.hamburger}
-        onClick={toggleMenu}
-        aria-label="Toggle menu"
-      >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
-
-      {/* Sidebar */}
-      <div
-        className={`${styles.sidebar} ${
-          isOpen ? styles.sidebarOpen : styles.sidebarClosed
-        }`}
-      >
-        {/* Logo */}
-        <div className={styles.logoContainer}>
+      {/* Header */}
+      <header className={styles.header}>
+        <div className={styles.headerContent}>
           <Link href="/" className={styles.logo}>
             <img
               src="/logo.png"
@@ -74,8 +60,22 @@ export default function Sidebar() {
               className={styles.logoImage}
             />
           </Link>
+          <button
+            className={styles.hamburger}
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+      </header>
 
+      {/* Sidebar */}
+      <div
+        className={`${styles.sidebar} ${
+          isOpen ? styles.sidebarOpen : styles.sidebarClosed
+        }`}
+      >
         {/* Navigation Items */}
         <nav className={styles.nav}>
           <div className={styles.navList}>
