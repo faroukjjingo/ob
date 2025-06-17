@@ -8,7 +8,7 @@ import Select from 'react-select';
 import { db } from '../../../../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { categories } from '../../../../constants/Categories';
-import { tagOptions } from '../../../../constants/Tags';
+import { tagsOptions } from '../../../../constants/Tags';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
