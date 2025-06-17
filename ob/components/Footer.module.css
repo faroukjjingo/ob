@@ -1,0 +1,114 @@
+/* Footer.module.css */
+
+/* General footer styles */
+.footer {
+  background-color: #1a202c;
+  color: #cbd5e0;
+  padding: 32px 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Grid layout for footer columns */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 32px;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Column styles */
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Titles and subtitles */
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.subtitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Description text */
+.description {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Navigation styles */
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.link {
+  font-size: 0.875rem;
+  color: #cbd5e0;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.link:hover {
+  color: #ffffff;
+}
+
+/* Icon group for social media */
+.iconGroup {
+  display: flex;
+  gap: 16px;
+}
+
+.icon {
+  color: #cbd5e0;
+  transition: color 0.3s ease;
+}
+
+.icon:hover {
+  color: #ffffff;
+}
+
+/* Footer bottom section */
+.footerBottom {
+  margin-top: 32px;
+  border-top: 1px solid #4a5568;
+  padding-top: 16px;
+  text-align: center;
+}
+
+.footerText {
+  font-size: 0.875rem;
+  margin: 8px 0;
+}
+
+.footerLink {
+  color: #cbd5e0;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footerLink:hover {
+  color: #ffffff;
+}
+
+.heartIcon {
+  color: #e53e3e;
+  vertical-align: middle;
+}

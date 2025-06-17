@@ -1,86 +1,83 @@
-// project/pages/admin/index.js
+// pages/admin/index.js
+'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import styles from '../../styles/OpportunityDetail.module.css';
+import { useRouter } from 'next/navigation';
+import styles from '../../styles/AdminDashboard.module.css';
 import Link from 'next/link';
-import { auth } from '../../lib/firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { db } from '../../lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@material-ui/core';
 
 export default function AdminDashboard() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [passcode, setPasscode] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState('');
   const [grants, setGrants] = useState([]);
   const router = useRouter();
 
+  const HARDCODED_PASSCODE = 'X7kP9mQ2';
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAuthenticated(!!user);
-    });
-    return () => unsubscribe();
+    const storedAuth = localStorage.getItem('adminAuthenticated');
+    if (storedAuth === 'true') {
+      setIsAuthenticated(true);
+    }
   }, []);
 
   useEffect(() => {
     if (isAuthenticated) {
       const fetchGrants = async () => {
-        const grantsCol = collection(db, 'grants');
-        const grantsSnapshot = await getDocs(grantsCol);
-        setGrants(grantsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        try {
+          const grantsCol = collection(db, 'grants');
+          const grantsSnapshot = await getDocs(grantsCol);
+          setGrants(
+            grantsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+          );
+        } catch (error) {
+          console.error('Error fetching grants:', error);
+        }
       };
       fetchGrants();
     }
   }, [isAuthenticated]);
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    try {
-      const res = await fetch('/api/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      if (res.ok) {
-        setIsAuthenticated(true);
-        setError('');
-      } else {
-        setError('Invalid credentials');
-      }
-    } catch (error) {
-      setError('Login failed');
+    if (passcode === HARDCODED_PASSCODE) {
+      setIsAuthenticated(true);
+      localStorage.setItem('adminAuthenticated', 'true');
+      setError('');
+    } else {
+      setError('Invalid passcode');
     }
   };
 
-  const handleLogout = async () => {
-    await signOut(auth);
+  const handleLogout = () => {
     setIsAuthenticated(false);
+    localStorage.removeItem('adminAuthenticated');
     router.push('/admin');
   };
 
   if (!isAuthenticated) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className={styles.container}>
         <h1 className={styles.title}>Admin Login</h1>
-        <form onSubmit={handleLogin} className="max-w-md mx-auto space-y-4">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="bg-surface shadow-sm w-full"
-            style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-          />
+        <form onSubmit={handleLogin} className={styles.form}>
           <input
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="bg-surface shadow-sm w-full"
-            style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
+            value={passcode}
+            onChange={(e) => setPasscode(e.target.value)}
+            placeholder="Enter Passcode"
+            className={styles.inputField}
           />
-          {error && <p className="text-red-500">{error}</p>}
+          {error && <p className={styles.errorText}>{error}</p>}
           <button type="submit" className={styles.primaryButton}>
             Login
           </button>
@@ -90,30 +87,42 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={styles.container}>
       <h1 className={styles.title}>Admin Dashboard</h1>
-      <div className="flex gap-4 mb-8">
+      <div className={styles.actions}>
         <Link href="/admin/grants/create" className={styles.primaryButton}>
           Create Grant
         </Link>
-        <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded-md">
+        <button onClick={handleLogout} className={styles.deleteButton}>
           Logout
         </button>
       </div>
-      <h2 className="text-xl font-semibold mb-4">Grants</h2>
-      <div className="grid gap-4">
-        {grants.map((grant) => (
-          <div key={grant.id} className="bg-surface shadow-md rounded-lg p-4 flex justify-between items-center">
-            <div>
-              <h3 className="text-lg font-medium">{grant.title}</h3>
-              <p className="text-text-secondary">Deadline: {new Date(grant.deadline).toLocaleDateString()}</p>
-            </div>
-            <Link href={`/admin/grants/edit/${grant.slug}`} className={styles.primaryButton}>
-              Edit
-            </Link>
-          </div>
-        ))}
-      </div>
+      <h2 className={styles.subTitle}>Grants</h2>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableHeader>Title</TableHeader>
+            <TableHeader>Deadline</TableHeader>
+            <TableHeader>Action</TableHeader>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {grants.map((grant) => (
+            <TableRow key={grant.id}>
+              <TableCell>{grant.title}</TableCell>
+              <TableCell>{new Date(grant.deadline).toLocaleDateString()}</TableCell>
+              <TableCell>
+                <Link
+                  href={`/admin/grants/edit/${grant.id}`}
+                  className={styles.primaryButton}
+                >
+                  Edit
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }

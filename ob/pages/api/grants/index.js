@@ -1,4 +1,3 @@
-
 import { db } from '../../../lib/firebase';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { generateSlug } from '../../../lib/utils';
@@ -31,6 +30,8 @@ export default async function handler(req, res) {
         contactEmail,
         deadline,
         media,
+        createdAt,
+        updatedAt,
       } = req.body;
       const newGrant = {
         title,
@@ -40,15 +41,15 @@ export default async function handler(req, res) {
         category,
         location,
         eligibility,
-        tags: tags.split(',').map(t => t.trim()),
+        tags: Array.isArray(tags) ? tags : [],
         publishedDate: publishedDate || new Date().toISOString(),
-        organizerName,
-        applicationProcess,
+        organizerName: organizerName || '',
+        applicationProcess: applicationProcess || '',
         contactEmail,
         deadline,
-        media,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        media: media || '',
+        createdAt: createdAt || new Date().toISOString(),
+        updatedAt: updatedAt || new Date().toISOString(),
       };
       const docRef = await addDoc(grantsCol, newGrant);
       res.status(201).json({ id: docRef.id, ...newGrant });

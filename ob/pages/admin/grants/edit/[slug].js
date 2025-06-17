@@ -1,10 +1,27 @@
-// project/pages/admin/grants/edit/[slug].js
+'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import styles from '../../../../styles/OpportunityDetail.module.css';
-import { auth, db } from '../../../../lib/firebase';
+import 'react-quill/dist/quill.snow.css';
+import Select from 'react-select';
+import { db } from '../../../../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
+import { categories } from '../../../../constants/Categories';
+import { tagsOptions } from '../../../../constants/Tags';
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+
+const locations = [
+  { value: 'north_america', label: 'North America' },
+  { value: 'south_america', label: 'South America' },
+  { value: 'europe', label: 'Europe' },
+  { value: 'asia', label: 'Asia' },
+  { value: 'africa', label: 'Africa' },
+  { value: 'australia', label: 'Australia' },
+  { value: 'global', label: 'Global' },
+];
+
 
 export async function getServerSideProps({ params }) {
   const grantDoc = doc(db, 'grants', params.slug);
@@ -12,57 +29,125 @@ export async function getServerSideProps({ params }) {
   if (!docSnap.exists()) {
     return { notFound: true };
   }
-  return { props: { grant: { id: docSnap.id, ...docSnap.data() } } };
+  const grantData = docSnap.data();
+  return {
+    props: {
+      grant: {
+        id: docSnap.id,
+        ...grantData,
+        tags: grantData.tags.map(tag => ({ value: tag, label: tag })),
+        publishedDate: grantData.publishedDate || new Date().toISOString(),
+        deadline: grantData.deadline || new Date().toISOString(),
+      },
+    },
+  };
 }
 
 export default function EditGrant({ grant }) {
   const [form, setForm] = useState({
-    title: grant.title,
-    description: grant.description,
-    link: grant.link,
-    category: grant.category,
-    location: grant.location,
-    eligibility: grant.eligibility,
-    tags: grant.tags.join(', '),
-    publishedDate: new Date(grant.publishedDate).toISOString().slice(0, 16),
-    organizerName: grant.organizerName,
-    applicationProcess: grant.applicationProcess,
-    contactEmail: grant.contactEmail,
-    deadline: new Date(grant.deadline).toISOString().slice(0, 16),
-    media: grant.media,
+    title: grant.title || '',
+    description: grant.description || '',
+    link: grant.link || '',
+    category: grant.category || '',
+    location: grant.location || '',
+    eligibility: grant.eligibility || '',
+    tags: grant.tags || [],
+    publishedDate: grant.publishedDate.slice(0, 16),
+    organizerName: grant.organizerName || '',
+    applicationProcess: grant.applicationProcess || '',
+    contactEmail: grant.contactEmail || '',
+    deadline: grant.deadline.slice(0, 16),
+    media: grant.media || '',
   });
+  const [errors, setErrors] = useState({});
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
-  const { slug } = router.query;
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        router.push('/admin');
-      } else {
-        setIsAuthenticated(true);
-      }
-    });
-    return () => unsubscribe();
+    const storedAuth = localStorage.getItem('adminAuthenticated');
+    if (storedAuth !== 'true') {
+      router.push('/admin');
+    } else {
+      setIsAuthenticated(true);
+    }
   }, [router]);
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!form.title) newErrors.title = 'Title is required';
+    if (!form.description) newErrors.description = 'Description is required';
+    if (!form.link) newErrors.link = 'Link is required';
+    if (!form.category) newErrors.category = 'Category is required';
+    if (!form.location) newErrors.location = 'Location is required';
+    if (!form.eligibility) newErrors.eligibility = 'Eligibility is required';
+    if (!form.deadline) newErrors.deadline = 'Deadline is required';
+    if (!form.contactEmail) newErrors.contactEmail = 'Contact Email is required';
+    return newErrors;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch(`/api/grants/${grant.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-    router.push('/admin');
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+    try {
+      const res = await fetch(`/api/grants/${grant.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          tags: form.tags.map(tag => tag.value),
+          updatedAt: new Date().toISOString(),
+        }),
+      });
+      if (res.ok) {
+        router.push('/admin');
+      } else {
+        console.error('Failed to update grant');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const handleDelete = async () => {
-    await fetch(`/api/grants/${grant.id}`, { method: 'DELETE' });
-    router.push('/admin');
+    try {
+      const res = await fetch(`/api/grants/${grant.id}`, { method: 'DELETE' });
+      if (res.ok) {
+        router.push('/admin');
+      } else {
+        console.error('Failed to delete grant');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' });
+  };
+
+  const handleQuillChange = (name) => (value) => {
+    setForm({ ...form, [name]: value });
+    setErrors({ ...errors, [name]: '' });
+  };
+
+  const handleSelectChange = (name) => (selected) => {
+    setForm({ ...form, [name]: name === 'tags' ? selected : selected?.value });
+    setErrors({ ...errors, [name]: '' });
+  };
+
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link', 'image'],
+      ['clean'],
+    ],
   };
 
   if (!isAuthenticated) {
@@ -70,126 +155,159 @@ export default function EditGrant({ grant }) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={styles.container}>
       <h1 className={styles.title}>Edit Grant</h1>
-      <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-4">
-        <input
-          type="text"
-          name="title"
-          placeholder="Title"
-          value={form.title}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <input
-          type="url"
-          name="link"
-          placeholder="Link"
-          value={form.link}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <input
-          type="text"
-          name="category"
-          placeholder="Category"
-          value={form.category}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <input
-          type="text"
-          name="location"
-          placeholder="Location"
-          value={form.location}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <textarea
-          name="eligibility"
-          placeholder="Eligibility"
-          value={form.eligibility}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <input
-          type="text"
-          name="tags"
-          placeholder="Tags (comma-separated)"
-          value={form.tags}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <input
-          type="datetime-local"
-          name="publishedDate"
-          value={form.publishedDate}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <input
-          type="text"
-          name="organizerName"
-          placeholder="Organizer Name"
-          value={form.organizerName}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <textarea
-          name="applicationProcess"
-          placeholder="Application Process"
-          value={form.applicationProcess}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <input
-          type="email"
-          name="contactEmail"
-          placeholder="Contact Email"
-          value={form.contactEmail}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <input
-          type="datetime-local"
-          name="deadline"
-          value={form.deadline}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <input
-          type="url"
-          name="media"
-          placeholder="Media URL"
-          value={form.media}
-          onChange={handleChange}
-          className="bg-surface shadow-sm w-full"
-          style={{ borderRadius: 'var(--radius-sm)', padding: 'var(--space-sm)' }}
-        />
-        <div className="flex gap-4">
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Title *</label>
+          <input
+            type="text"
+            name="title"
+            placeholder="Title"
+            value={form.title}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+          {errors.title && <p className={styles.errorText}>{errors.title}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Description *</label>
+          <ReactQuill
+            value={form.description}
+            onChange={handleQuillChange('description')}
+            modules={quillModules}
+            className={styles.quillEditor}
+          />
+          {errors.description && <p className={styles.errorText}>{errors.description}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Link *</label>
+          <input
+            type="url"
+            name="link"
+            placeholder="Link"
+            value={form.link}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+          {errors.link && <p className={styles.errorText}>{errors.link}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Category *</label>
+          <Select
+            options={categories}
+            value={categories.find(c => c.value === form.category)}
+            onChange={handleSelectChange('category')}
+            className={styles.selectField}
+            placeholder="Select Category"
+          />
+          {errors.category && <p className={styles.errorText}>{errors.category}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Location *</label>
+          <Select
+            options={locations}
+            value={locations.find(l => l.value === form.location)}
+            onChange={handleSelectChange('location')}
+            className={styles.selectField}
+            placeholder="Select Location"
+          />
+          {errors.location && <p className={styles.errorText}>{errors.location}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Eligibility *</label>
+          <ReactQuill
+            value={form.eligibility}
+            onChange={handleQuillChange('eligibility')}
+            modules={quillModules}
+            className={styles.quillEditor}
+          />
+          {errors.eligibility && <p className={styles.errorText}>{errors.eligibility}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Tags</label>
+          <Select
+            isMulti
+            options={tagsOptions}
+            value={form.tags}
+            onChange={handleSelectChange('tags')}
+            className={styles.selectField}
+            placeholder="Select Tags"
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Published Date</label>
+          <input
+            type="datetime-local"
+            name="publishedDate"
+            value={form.publishedDate}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Organizer Name</label>
+          <input
+            type="text"
+            name="organizerName"
+            placeholder="Organizer Name"
+            value={form.organizerName}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Application Process</label>
+          <ReactQuill
+            value={form.applicationProcess}
+            onChange={handleQuillChange('applicationProcess')}
+            modules={quillModules}
+            className={styles.quillEditor}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Contact Email *</label>
+          <input
+            type="email"
+            name="contactEmail"
+            placeholder="Contact Email"
+            value={form.contactEmail}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+          {errors.contactEmail && <p className={styles.errorText}>{errors.contactEmail}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Deadline *</label>
+          <input
+            type="datetime-local"
+            name="deadline"
+            value={form.deadline}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+          {errors.deadline && <p className={styles.errorText}>{errors.deadline}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Media URL</label>
+          <input
+            type="url"
+            name="media"
+            placeholder="Media URL"
+            value={form.media}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+        </div>
+        <div className={styles.buttonGroup}>
           <button type="submit" className={styles.primaryButton}>
             Update Grant
           </button>
-          <button type="button" onClick={handleDelete} className="bg-red-500 text-white px-4 py-2 rounded-md">
+          <button
+            type="button"
+            onClick={handleDelete}
+            className={styles.deleteButton}
+          >
             Delete Grant
           </button>
         </div>
