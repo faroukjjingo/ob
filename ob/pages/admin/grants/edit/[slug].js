@@ -7,8 +7,8 @@ import 'react-quill/dist/quill.snow.css';
 import Select from 'react-select';
 import { db } from '../../../../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { categories } from '../../../constants/categories';
-import { tagOptions } from '../../../constants/tags';
+import { categories } from '../../../../constants/categories';
+import { tagOptions } from '../../../../constants/tags';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
