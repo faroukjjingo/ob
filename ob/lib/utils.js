@@ -1,4 +1,3 @@
-// lib/utils.js
 export function generateSlug(title) {
   return title
     .toLowerCase()
