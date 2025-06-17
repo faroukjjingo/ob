@@ -1,4 +1,3 @@
-// pages/admin/grants/create.js
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -63,7 +62,6 @@ const tagsOptions = [
   { value: 'renewable_energy', label: 'Renewable Energy' },
   { value: 'water_sanitation', label: 'Water & Sanitation' },
   { value: 'food_security', label: 'Food Security' },
-  // Add more tags to reach 100
   { value: 'literacy', label: 'Literacy' },
   { value: 'vocational_training', label: 'Vocational Training' },
   { value: 'microfinance', label: 'Microfinance' },
@@ -188,6 +186,9 @@ export default function CreateGrant() {
         body: JSON.stringify({
           ...form,
           tags: form.tags.map(tag => tag.value),
+          publishedDate: form.publishedDate || new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         }),
       });
       if (res.ok) {
