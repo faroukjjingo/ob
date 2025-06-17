@@ -1,4 +1,4 @@
-export const manytags = [
+export const tagsOptions = [
   { value: 'sustainability', label: 'Sustainability' },
   { value: 'innovation', label: 'Innovation' },
   { value: 'education', label: 'Education' },
