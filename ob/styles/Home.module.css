@@ -32,12 +32,6 @@
   color: var(--color-accent);
 }
 
-.heroDescription {
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin: 0 auto var(--space-lg);
-}
-
 .searchSection {
   max-width: 600px;
   width: 100%;
@@ -61,12 +55,14 @@
   color: var(--color-text-muted);
 }
 
-.filterButton {
-  position: absolute;
-  right: var(--space-sm);
-  background: none;
-  border: none;
-  color: var(--color-text-muted);
+.filterWrapper {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.selectField {
+  width: 100%;
 }
 
 .quickActions {
@@ -74,6 +70,7 @@
   gap: var(--space-md);
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: var(--space-md);
 }
 
 .quickAction {
@@ -92,33 +89,8 @@
   border-color: var(--color-border-hover);
 }
 
-.heroStats {
-  display: flex;
-  gap: var(--space-lg);
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.statItem {
-  text-align: center;
-}
-
-.statNumber {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.statLabel {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-}
-
 .opportunityTypes,
 .featuredSection,
-.deadlinesSection,
-.successSection,
-.newsletterSection,
 .mainStatsSection,
 .resultsSection {
   padding: var(--space-xl) 0;
@@ -138,12 +110,6 @@
 .sectionTitle {
   font-size: 2rem;
   margin-bottom: var(--space-sm);
-}
-
-.sectionDescription {
-  max-width: 600px;
-  margin: 0 auto;
-  color: var(--color-text-secondary);
 }
 
 .sectionLink {
@@ -183,6 +149,8 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: white;
 }
 
 .typeContent {
@@ -194,203 +162,10 @@
   margin-bottom: var(--space-xs);
 }
 
-.typeDescription {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-}
-
-.typeCount {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  margin-top: var(--space-xs);
-}
-
-.typeArrow {
-  color: var(--color-text-muted);
-}
-
 .featuredGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: var(--space-md);
-}
-
-.deadlinesHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-lg);
-}
-
-.deadlineItem {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-md);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-md);
-}
-
-.deadlineDate {
-  text-align: center;
-  min-width: 60px;
-}
-
-.deadlineDay {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.deadlineMonth {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-}
-
-.deadlineContent {
-  flex: 1;
-}
-
-.deadlineTitle {
-  font-size: 1.1rem;
-  margin-bottom: var(--space-xs);
-}
-
-.deadlineOrg {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-}
-
-.deadlineAmount {
-  font-size: 0.9rem;
-  color: var(--color-accent);
-  margin-top: var(--space-xs);
-}
-
-.deadlineButton {
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-primary);
-  color: white;
-  border-radius: var(--radius-md);
-  font-weight: 500;
-}
-
-.deadlineButton:hover {
-  background: var(--color-accent);
-}
-
-.successGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--space-md);
-}
-
-.successCard {
-  padding: var(--space-md);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-}
-
-.successQuote {
-  margin-bottom: var(--space-md);
-}
-
-.successStars {
-  display: flex;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-sm);
-}
-
-.successStory {
-  font-size: 0.9rem;
-  font-style: italic;
-  color: var(--color-text-secondary);
-}
-
-.successProfile {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-.successAvatar {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-accent);
-  color: white;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-}
-
-.successName {
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.successTitle {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-}
-
-.successAmount {
-  font-size: 0.9rem;
-  color: var(--color-accent);
-}
-
-.newsletterSection {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-}
-
-.newsletterContent {
-  display: flex;
-  align-items: center;
-  gap: var(--space-lg);
-  padding: var(--space-lg);
-}
-
-.newsletterText {
-  flex: 1;
-}
-
-.newsletterTitle {
-  font-size: 1.5rem;
-  margin-bottom: var(--space-sm);
-}
-
-.newsletterDescription {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-}
-
-.newsletterForm {
-  display: flex;
-  gap: var(--space-sm);
-  max-width: 400px;
-  width: 100%;
-}
-
-.newsletterInput {
-  flex: 1;
-}
-
-.newsletterButton {
-  background: var(--color-primary);
-  color: white;
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.newsletterButton:hover {
-  background: var(--color-accent);
 }
 
 .statsGrid {
@@ -471,19 +246,9 @@
   padding: var(--space-xl);
 }
 
-.noResultsIcon {
-  font-size: 2rem;
-  margin-bottom: var(--space-sm);
-}
-
 .noResultsTitle {
   font-size: 1.5rem;
   margin-bottom: var(--space-sm);
-}
-
-.noResultsText {
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-md);
 }
 
 .clearButton {
@@ -494,26 +259,6 @@
 .clearButton:hover {
   background: var(--color-surface-hover);
   border-color: var(--color-border-hover);
-}
-
-.viewMoreSection {
-  text-align: center;
-  margin-top: var(--space-lg);
-}
-
-.viewMoreButton {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-primary);
-  color: white;
-  border-radius: var(--radius-md);
-  font-weight: 500;
-}
-
-.viewMoreButton:hover {
-  background: var(--color-accent);
 }
 
 @keyframes pulse {
@@ -531,12 +276,7 @@
     font-size: 1.5rem;
   }
 
-  .newsletterContent {
+  .filterWrapper {
     flex-direction: column;
-    text-align: center;
-  }
-
-  .newsletterForm {
-    max-width: 100%;
   }
 }
