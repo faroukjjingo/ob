@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import GrantCard from '../../components/GrantCard';
-
+import styles from './CompetitionsPage.module.css';
 
 export default function CompetitionsPage() {
   const [grants, setGrants] = useState([]);
