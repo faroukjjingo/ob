@@ -55,7 +55,7 @@ export default function Navbar() {
         <div className={styles.headerContent}>
           <Link href="/" className={styles.logo}>
             <img
-              src="/logo.png"
+              src="/logo.jpg"
               alt="Opportunity Board Logo"
               className={styles.logoImage}
             />
