@@ -3,9 +3,13 @@ import Link from 'next/link';
 import styles from '../styles/GrantCard.module.css';
 
 export default function GrantCard({ grant }) {
-  const truncatedDescription = grant.description?.length > 80
-    ? `${grant.description.slice(0, 80)}...`
-    : grant.description || 'No description available';
+  // Strip HTML tags from description and truncate to 80 characters
+  const cleanDescription = grant.description
+    ? grant.description.replace(/<[^>]+>/g, '')
+    : 'No description available';
+  const truncatedDescription = cleanDescription.length > 80
+    ? `${cleanDescription.slice(0, 80)}...`
+    : cleanDescription;
 
   return (
     <div className={styles.card}>
