@@ -1,3 +1,4 @@
+// pages/admin/index.js
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -5,6 +6,14 @@ import styles from '../../styles/AdminDashboard.module.css';
 import Link from 'next/link';
 import { db } from '../../lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@material-ui/core';
 
 export default function AdminDashboard() {
   const [passcode, setPasscode] = useState('');
@@ -89,24 +98,31 @@ export default function AdminDashboard() {
         </button>
       </div>
       <h2 className={styles.subTitle}>Grants</h2>
-      <div className={styles.grid}>
-        {grants.map((grant) => (
-          <div key={grant.id} className={styles.card}>
-            <div>
-              <h3 className={styles.cardTitle}>{grant.title}</h3>
-              <p className={styles.cardSubtitle}>
-                Deadline: {new Date(grant.deadline).toLocaleDateString()}
-              </p>
-            </div>
-            <Link
-              href={`/admin/grants/edit/${grant.id}`}
-              className={styles.primaryButton}
-            >
-              Edit
-            </Link>
-          </div>
-        ))}
-      </div>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableHeader>Title</TableHeader>
+            <TableHeader>Deadline</TableHeader>
+            <TableHeader>Action</TableHeader>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {grants.map((grant) => (
+            <TableRow key={grant.id}>
+              <TableCell>{grant.title}</TableCell>
+              <TableCell>{new Date(grant.deadline).toLocaleDateString()}</TableCell>
+              <TableCell>
+                <Link
+                  href={`/admin/grants/edit/${grant.id}`}
+                  className={styles.primaryButton}
+                >
+                  Edit
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
