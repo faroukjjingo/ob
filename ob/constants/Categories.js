@@ -3,7 +3,6 @@ export const categories = [
   { value: 'competitions', label: 'Competitions' },
   { value: 'conferences', label: 'Conferences' },
   { value: 'scholarships', label: 'Scholarships' },
-  { value: 'workshops', label: 'Workshops' },
   { value: 'jobs', label: 'Jobs' },
   { value: 'internships', label: 'Internships' },
   { value: 'fellowships', label: 'Fellowships' },
