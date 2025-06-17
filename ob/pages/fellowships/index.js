@@ -1,5 +1,7 @@
+// FellowshipsPage.jsx
 import { useState, useEffect } from 'react';
 import GrantCard from '../../components/GrantCard';
+import styles from './FellowshipsPage.module.css';
 
 export default function FellowshipsPage() {
   const [grants, setGrants] = useState([]);
