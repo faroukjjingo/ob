@@ -1,8 +1,9 @@
 /* styles/OpportunityDetail.module.css */
 .container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: var(--space-md);
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: var(--space-xs);
   background: var(--color-background);
   min-height: calc(100vh - 80px);
 }
@@ -11,9 +12,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-md);
-  margin-bottom: var(--space-lg);
-  padding: var(--space-md);
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm);
   background: var(--color-surface);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
@@ -21,7 +22,7 @@
 
 .heroImageWrapper {
   width: 100%;
-  max-width: 700px;
+  max-width: 100%;
   height: 250px;
   overflow: hidden;
   border-radius: var(--radius-sm);
@@ -55,7 +56,7 @@
 .metaGroup {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
   justify-content: center;
   align-items: center;
 }
@@ -97,12 +98,12 @@
 }
 
 .details {
-  max-width: 800px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-  padding: var(--space-md);
+  gap: var(--space-sm);
+  padding: var(--space-sm);
   background: var(--color-surface);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-xs);
@@ -129,7 +130,7 @@
   line-height: 1.5;
   background: var(--color-surface);
   border-radius: var(--radius-sm);
-  padding: var(--space-sm);
+  padding: var(--space-xs);
 }
 
 .quillViewer :global(.ql-container) {
@@ -187,10 +188,10 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-  max-width: 800px;
-  margin: 0 auto;
-  padding: var(--space-md);
+  gap: var(--space-sm);
+  width: 100%;
+  margin: 0;
+  padding: var(--space-sm);
   background: var(--color-surface);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
@@ -218,7 +219,7 @@
   font-family: 'Inter', sans-serif;
   background: var(--color-surface);
   border-radius: var(--radius-sm);
-  min-height: 120px;
+  min-height: 100px;
   box-shadow: var(--shadow-xs);
 }
 
@@ -267,7 +268,7 @@
 
 @media (min-width: 768px) {
   .container {
-    padding: var(--space-lg);
+    padding: var(--space-sm);
   }
 
   .title {
@@ -285,7 +286,7 @@
 
 @media (min-width: 1024px) {
   .container {
-    padding: var(--space-lg);
+    padding: var(--space-sm);
   }
 
   .title {
