@@ -100,7 +100,7 @@ export default function Home({ grants }) {
                 <Search className={styles.searchIcon} size={20} />
                 <input
                   type="text"
-                  placeholder="Search opportunities..."
+                  placeholder=".   Search opportunities..."
                   value={searchTerm}
                   onChange={handleSearch}
                   className={styles.searchInput}
