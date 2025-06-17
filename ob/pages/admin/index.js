@@ -1,4 +1,3 @@
-// pages/admin/index.js
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -11,9 +10,8 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TableHeader,
   TableRow,
-} from '@material-ui/core';
+} from '@mui/material';
 
 export default function AdminDashboard() {
   const [passcode, setPasscode] = useState('');
@@ -101,9 +99,9 @@ export default function AdminDashboard() {
       <Table>
         <TableHead>
           <TableRow>
-            <TableHeader>Title</TableHeader>
-            <TableHeader>Deadline</TableHeader>
-            <TableHeader>Action</TableHeader>
+            <TableCell>Title</TableCell>
+            <TableCell>Deadline</TableCell>
+            <TableCell>Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
