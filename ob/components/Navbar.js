@@ -28,7 +28,6 @@ export default function Navbar() {
     { name: 'Competitions', href: '/competitions', icon: Trophy },
     { name: 'Conferences', href: '/conferences', icon: Users },
     { name: 'Scholarships', href: '/scholarships', icon: GraduationCap },
-    { name: 'Workshops', href: '/workshops', icon: BookOpen },
     { name: 'Jobs', href: '/jobs', icon: Briefcase },
     { name: 'Internships', href: '/internships', icon: FileText },
     { name: 'Fellowships', href: '/fellowships', icon: Lightbulb },
