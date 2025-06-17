@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import styles from '../../../styles/OpportunityDetail.module.css';
 import 'react-quill/dist/quill.snow.css';
 import Select from 'react-select';
-import { categories } from '../../../categories';
+import { categories } from '../../../constants/categories';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
