@@ -6,7 +6,7 @@ import styles from '../../../styles/OpportunityDetail.module.css';
 import 'react-quill/dist/quill.snow.css';
 import Select from 'react-select';
 import { categories } from '../../../constants/categories';
-import { tags } from '../../../constants/tags';
+import { tagOptions } from '../../../constants/tags';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
