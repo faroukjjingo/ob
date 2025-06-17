@@ -1,5 +1,7 @@
+// JobsPage.jsx
 import { useState, useEffect } from 'react';
 import GrantCard from '../../components/GrantCard';
+import styles from './JobsPage.module.css';
 
 export default function JobsPage() {
   const [grants, setGrants] = useState([]);
