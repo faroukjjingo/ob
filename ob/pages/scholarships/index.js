@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import GrantCard from '../../components/GrantCard';
-import styles from '../../styles/Scholarships.module.css';
 
 export default function ScholarshipsPage() {
   const [grants, setGrants] = useState([]);
