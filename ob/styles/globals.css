@@ -2,16 +2,16 @@
 :root {
   --color-primary: #0f172a;
   --color-secondary: #059669;
-  --color-accent: #3b82f6;
+  --color-accent: #1e40af; /* Darker blue for higher contrast */
   --color-background: #ffffff; /* Enforce white background */
   --color-surface: #ffffff;
-  --color-surface-hover: #f8fafc;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #64748b;
-  --color-text-muted: #94a3b8;
-  --color-border: #e2e8f0;
-  --color-border-hover: #cbd5e1;
-  
+  --color-surface-hover: #f1f5f9; /* Slightly darker hover */
+  --color-text-primary: #0a0e1a; /* Very dark gray for text */
+  --color-text-secondary: #475569; /* Darker secondary text */
+  --color-text-muted: #6b7280; /* Darker muted text */
+  --color-border: #d1d5db; /* Darker border */
+  --color-border-hover: #9ca3af; /* Darker border on hover */
+
   /* Spacing */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
