@@ -4,8 +4,8 @@ import Select from 'react-select';
 import dynamic from 'next/dynamic';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 import 'react-quill/dist/quill.snow.css';
-import { tagsOptions } fron '../../constants/Tags';
-import { categories } fron '../../constants/Categories';
+import { tagsOptions } from '../../constants/Tags';
+import { categories } from '../../constants/Categories';
 
 
 const locations = [
