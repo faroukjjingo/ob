@@ -1,4 +1,3 @@
-// pages/index.js
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -37,7 +36,8 @@ const locations = [
   { value: 'asia', label: 'Asia' },
   { value: 'africa', label: 'Africa' },
   { value: 'australia', label: 'Australia' },
-  { value: 'global', label: 'Global' }
+  { value: 'global', label: 'Global' },
+    { value: 'regional', label: 'Regional' }
 ];
 
 export default function Home({ grants }) {
@@ -131,27 +131,6 @@ export default function Home({ grants }) {
                 </Link>
               ))}
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Opportunity Types Section */}
-      <div className={styles.opportunityTypes}>
-        <div className={styles.sectionContent}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Explore Opportunities</h2>
-          </div>
-          <div className={styles.typesGrid}>
-            {opportunityTypes.map((type) => (
-              <Link key={type.title} href={type.href} className={styles.typeCard}>
-                <div className={styles.typeIcon}>
-                  <type.icon size={24} />
-                </div>
-                <div className={styles.typeContent}>
-                  <h3 className={styles.typeTitle}>{type.title}</h3>
-                </div>
-              </Link>
-            ))}
           </div>
         </div>
       </div>
