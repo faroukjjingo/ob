@@ -19,6 +19,7 @@ const locations = [
   { value: 'africa', label: 'Africa' },
   { value: 'australia', label: 'Australia' },
   { value: 'global', label: 'Global' },
+    { value: 'regional', label: 'Regional' },
 ];
 
 
