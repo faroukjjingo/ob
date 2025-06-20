@@ -7,20 +7,11 @@ import 'react-quill/dist/quill.snow.css';
 import Select from 'react-select';
 import { categories } from '../../../constants/Categories';
 import { tagsOptions } from '../../../constants/Tags';
+import { locations } from '../../../constants/Locations';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 
-const locations = [
-  { value: 'north_america', label: 'North America' },
-  { value: 'south_america', label: 'South America' },
-  { value: 'europe', label: 'Europe' },
-  { value: 'asia', label: 'Asia' },
-  { value: 'africa', label: 'Africa' },
-  { value: 'australia', label: 'Australia' },
-  { value: 'global', label: 'Global' },
-    { value: 'regional', label: 'Regional' },
-];
 
 
 
