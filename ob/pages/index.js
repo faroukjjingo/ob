@@ -7,7 +7,9 @@ import { db } from '../lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import GrantCard from '../components/GrantCard';
 import Select from 'react-select';
-import { tagsOptions } from '../../../constants/Tags'; // Import tagsOptions
+import { tagsOptions } from '../components/constants/Tags'; // Import tagsOptions
+import { location } from '../components/constants/Location'; // Import tagsOptions
+import { categories } from '../components/constants/Categories'; // Import tagsOptions
 
 export async function getStaticProps() {
   try {
