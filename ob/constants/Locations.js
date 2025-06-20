@@ -1,4 +1,4 @@
-const locations = [
+export const locations = [
   // Continents and Major Regions
   { value: 'global', label: 'Global' },
   { value: 'regional', label: 'Regional' },
