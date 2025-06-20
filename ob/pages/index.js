@@ -23,25 +23,7 @@ export async function getStaticProps() {
   }
 }
 
-const categories = [
-  { value: 'grants', label: 'Grants' },
-  { value: 'scholarships', label: 'Scholarships' },
-  { value: 'competitions', label: 'Competitions' },
-  { value: 'jobs', label: 'Jobs' },
-  { value: 'internships', label: 'Internships' },
-  { value: 'fellowships', label: 'Fellowships' }
-];
 
-const locations = [
-  { value: 'north_america', label: 'North America' },
-  { value: 'south_america', label: 'South America' },
-  { value: 'europe', label: 'Europe' },
-  { value: 'asia', label: 'Asia' },
-  { value: 'africa', label: 'Africa' },
-  { value: 'australia', label: 'Australia' },
-  { value: 'global', label: 'Global' },
-  { value: 'regional', label: 'Regional' }
-];
 
 export default function Home({ grants }) {
   const [filteredGrants, setFilteredGrants] = useState([]);
