@@ -7,6 +7,7 @@ import { db } from '../lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import GrantCard from '../components/GrantCard';
 import Select from 'react-select';
+import { tagsOptions } from '../../../constants/Tags'; // Import tagsOptions
 
 export async function getStaticProps() {
   try {
@@ -37,7 +38,7 @@ const locations = [
   { value: 'africa', label: 'Africa' },
   { value: 'australia', label: 'Australia' },
   { value: 'global', label: 'Global' },
-    { value: 'regional', label: 'Regional' }
+  { value: 'regional', label: 'Regional' }
 ];
 
 export default function Home({ grants }) {
@@ -45,24 +46,28 @@ export default function Home({ grants }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedTags, setSelectedTags] = useState([]); // New state for tags
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setFilteredGrants(
       grants.filter((grant) => {
         const isActive = grant.deadline ? new Date(grant.deadline) > new Date() : true;
-        const matchesSearch = 
+        const matchesSearch =
           (grant.title?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
           (grant.category?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
           (grant.location?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
           (grant.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())) || false);
         const matchesCategory = selectedCategory ? grant.category === selectedCategory.value : true;
         const matchesLocation = selectedLocation ? grant.location === selectedLocation.value : true;
-        return isActive && matchesSearch && matchesCategory && matchesLocation;
+        const matchesTags = selectedTags.length > 0
+          ? grant.tags?.some(tag => selectedTags.some(selectedTag => selectedTag.value === tag))
+          : true; // New tag filter logic
+        return isActive && matchesSearch && matchesCategory && matchesLocation && matchesTags;
       })
     );
     setIsLoading(false);
-  }, [grants, searchTerm, selectedCategory, selectedLocation]);
+  }, [grants, searchTerm, selectedCategory, selectedLocation, selectedTags]); // Add selectedTags to dependencies
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -100,7 +105,7 @@ export default function Home({ grants }) {
                 <Search className={styles.searchIcon} size={20} />
                 <input
                   type="text"
-                  placeholder=".   Search opportunities..."
+                  placeholder="Search opportunities..."
                   value={searchTerm}
                   onChange={handleSearch}
                   className={styles.searchInput}
@@ -119,6 +124,14 @@ export default function Home({ grants }) {
                   value={selectedLocation}
                   onChange={setSelectedLocation}
                   placeholder="Filter by Location"
+                  className={styles.selectField}
+                />
+                <Select
+                  isMulti
+                  options={tagsOptions}
+                  value={selectedTags}
+                  onChange={setSelectedTags}
+                  placeholder="Filter by Tags"
                   className={styles.selectField}
                 />
               </div>
@@ -175,7 +188,9 @@ export default function Home({ grants }) {
       <div className={styles.resultsSection}>
         <div className={styles.resultsHeader}>
           <h2 className={styles.resultsTitle}>
-            {searchTerm ? `Results for "${searchTerm}"` : 'Latest Opportunities'}
+            {searchTerm || selectedCategory || selectedLocation || selectedTags.length > 0
+              ? `Results for "${searchTerm || 'filtered opportunities'}"`
+              : 'Latest Opportunities'}
           </h2>
           <div className={styles.resultsCount}>
             {isLoading ? (
@@ -197,11 +212,12 @@ export default function Home({ grants }) {
           ) : filteredGrants.length === 0 ? (
             <div className={styles.noResults}>
               <h3 className={styles.noResultsTitle}>No opportunities found</h3>
-              <button 
+              <button
                 onClick={() => {
                   setSearchTerm('');
                   setSelectedCategory(null);
                   setSelectedLocation(null);
+                  setSelectedTags([]); // Clear tags
                 }}
                 className={styles.clearButton}
               >
