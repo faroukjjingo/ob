@@ -9,7 +9,7 @@ export default function Footer() {
       <div className={styles.container}>
         <div className={styles.grid}>
           <div className={styles.column}>
-            <h3 className={styles.title}>Opportunity Board</h3>
+            <h3 className={styles.title}>Opportunity Scout</h3>
             <p className={styles.description}>
               Connecting you to global opportunities, built with passion in Uganda.
             </p>
