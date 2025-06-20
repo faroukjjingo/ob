@@ -1,51 +1,268 @@
-/* styles/GrantCard.module.css */
 .card {
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #f1f5f9;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 340px;
-  min-width: 280px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 360px;
+  min-width: 300px;
+  transition: all var(--transition-normal);
   position: relative;
-  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
 }
 
 .card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.08), 
-              0 8px 16px -8px rgba(0, 0, 0, 0.04);
-  border-color: #e2e8f0;
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-border-hover);
 }
 
 .tag {
   position: absolute;
   top: 12px;
   left: 12px;
-  background: rgba(255, 255, 255, 0.95);
-  color: #475569;
   font-size: 0.75rem;
   font-weight: 600;
-  padding: 6px 10px;
-  border-radius: 20px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
-  gap: 4px;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  gap: 6px;
   z-index: 2;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-xs);
+  color: #ffffff;
 }
+
+/* Location-based tag colors */
+.tag[data-location="global"] { background: #4b5563; }
+.tag[data-location="regional"] { background: #6b7280; }
+.tag[data-location="africa"] { background: #38a169; }
+.tag[data-location="asia"] { background: #d69e2e; }
+.tag[data-location="australia"] { background: #ed8936; }
+.tag[data-location="europe"] { background: #e53e3e; }
+.tag[data-location="north_america"] { background: #3182ce; }
+.tag[data-location="south_america"] { background: #805ad5; }
+.tag[data-location="antarctica"] { background: #4c1d95; }
+.tag[data-location="central_america"] { background: #059669; }
+.tag[data-location="caribbean"] { background: #14b8a6; }
+.tag[data-location="northern_europe"] { background: #db2777; }
+.tag[data-location="western_europe"] { background: #be185d; }
+.tag[data-location="eastern_europe"] { background: #9d174d; }
+.tag[data-location="southern_europe"] { background: #831843; }
+.tag[data-location="north_africa"] { background: #16a34a; }
+.tag[data-location="east_africa"] { background: #15803d; }
+.tag[data-location="west_africa"] { background: #166534; }
+.tag[data-location="central_africa"] { background: #14532d; }
+.tag[data-location="southern_africa"] { background: #052e16; }
+.tag[data-location="south_asia"] { background: #ca8a04; }
+.tag[data-location="southeast_asia"] { background: #a16207; }
+.tag[data-location="east_asia"] { background: #854d0e; }
+.tag[data-location="central_asia"] { background: #713f12; }
+.tag[data-location="middle_east"] { background: #f97316; }
+.tag[data-location="pacific_islands"] { background: #0ea5e9; }
+.tag[data-location="afghanistan"] { background: #9f1239; }
+.tag[data-location="albania"] { background: #991b1b; }
+.tag[data-location="algeria"] { background: #166534; }
+.tag[data-location="andorra"] { background: #1e3a8a; }
+.tag[data-location="angola"] { background: #dc2626; }
+.tag[data-location="antigua_and_barbuda"] { background: #0f766e; }
+.tag[data-location="argentina"] { background: #38bdf8; }
+.tag[data-location="armenia"] { background: #f97316; }
+.tag[data-location="australia_country"] { background: #f59e0b; }
+.tag[data-location="austria"] { background: #dc2626; }
+.tag[data-location="azerbaijan"] { background: #059669; }
+.tag[data-location="bahamas"] { background: #0ea5e9; }
+.tag[data-location="bahrain"] { background: #b91c1c; }
+.tag[data-location="bangladesh"] { background: #15803d; }
+.tag[data-location="barbados"] { background: #1d4ed8; }
+.tag[data-location="belarus"] { background: #dc2626; }
+.tag[data-location="belgium"] { background: #ca8a04; }
+.tag[data-location="belize"] { background: #2563eb; }
+.tag[data-location="benin"] { background: #15803d; }
+.tag[data-location="bhutan"] { background: #f59e0b; }
+.tag[data-location="bolivia"] { background: #16a34a; }
+.tag[data-location="bosnia_and_herzegovina"] { background: #1e3a8a; }
+.tag[data-location="botswana"] { background: #38bdf8; }
+.tag[data-location="brazil"] { background: #16a34a; }
+.tag[data-location="brunei"] { background: #f59e0b; }
+.tag[data-location="bulgaria"] { background: #16a34a; }
+.tag[data-location="burkina_faso"] { background: #dc2626; }
+.tag[data-location="burundi"] { background: #16a34a; }
+.tag[data-location="cabo_verde"] { background: #1e3a8a; }
+.tag[data-location="cambodia"] { background: #1e40af; }
+.tag[data-location="cameroon"] { background: #16a34a; }
+.tag[data-location="canada"] { background: #dc2626; }
+.tag[data-location="central_african_republic"] { background: #1e3a8a; }
+.tag[data-location="chad"] { background: #1e40af; }
+.tag[data-location="chile"] { background: #dc2626; }
+.tag[data-location="china"] { background: #b91c1c; }
+.tag[data-location="colombia"] { background: #ca8a04; }
+.tag[data-location="comoros"] { background: #16a34a; }
+.tag[data-location="congo"] { background: #0ea5e9; }
+.tag[data-location="costa_rica"] { background: #1e3a8a; }
+.tag[data-location="croatia"] { background: #dc2626; }
+.tag[data-location="cuba"] { background: #1e3a8a; }
+.tag[data-location="cyprus"] { background: #f59e0b; }
+.tag[data-location="czech_republic"] { background: #dc2626; }
+.tag[data-location="denmark"] { background: #dc2626; }
+.tag[data-location="djibouti"] { background: #38bdf8; }
+.tag[data-location="dominica"] { background: #16a34a; }
+.tag[data-location="dominican_republic"] { background: #6b21a8; }
+.tag[data-location="dr_congo"] { background: #0ea5e9; }
+.tag[data-location="ecuador"] { background: #ca8a04; }
+.tag[data-location="egypt"] { background: #b91c1c; }
+.tag[data-location="el_salvador"] { background: #1e3a8a; }
+.tag[data-location="equatorial_guinea"] { background: #16a34a; }
+.tag[data-location="eritrea"] { background: #dc2626; }
+.tag[data-location="estonia"] { background: #1e3a8a; }
+.tag[data-location="eswatini"] { background: #1e40af; }
+.tag[data-location="ethiopia"] { background: #16a34a; }
+.tag[data-location="fiji"] { background: #0ea5e9; }
+.tag[data-location="finland"] { background: #1e3a8a; }
+.tag[data-location="france"] { background: #1e40af; }
+.tag[data-location="gabon"] { background: #16a34a; }
+.tag[data-location="gambia"] { background: #dc2626; }
+.tag[data-location="georgia"] { background: #dc2626; }
+.tag[data-location="germany"] { background: #ca8a04; }
+.tag[data-location="ghana"] { background: #16a34a; }
+.tag[data-location="greece"] { background: #1e3a8a; }
+.tag[data-location="grenada"] { background: #16a34a; }
+.tag[data-location="guatemala"] { background: #38bdf8; }
+.tag[data-location="guinea"] { background: #16a34a; }
+.tag[data-location="guinea_bissau"] { background: #ca8a04; }
+.tag[data-location="guyana"] { background: #f59e0b; }
+.tag[data-location="haiti"] { background: #1e3a8a; }
+.tag[data-location="honduras"] { background: #1e40af; }
+.tag[data-location="hungary"] { background: #16a34a; }
+.tag[data-location="iceland"] { background: #1e3a8a; }
+.tag[data-location="india"] { background: #f97316; }
+.tag[data-location="indonesia"] { background: #dc2626; }
+.tag[data-location="iran"] { background: #16a34a; }
+.tag[data-location="iraq"] { background: #b91c1c; }
+.tag[data-location="ireland"] { background: #16a34a; }
+.tag[data-location="israel"] { background: #1e40af; }
+.tag[data-location="italy"] { background: #16a34a; }
+.tag[data-location="jamaica"] { background: #f59e0b; }
+.tag[data-location="japan"] { background: #dc2626; }
+.tag[data-location="jordan"] { background: #b91c1c; }
+.tag[data-location="kazakhstan"] { background: #38bdf8; }
+.tag[data-location="kenya"] { background: #16a34a; }
+.tag[data-location="kiribati"] { background: #0ea5e9; }
+.tag[data-location="kuwait"] { background: #b91c1c; }
+.tag[data-location="kyrgyzstan"] { background: #dc2626; }
+.tag[data-location="laos"] { background: #1e3a8a; }
+.tag[data-location="latvia"] { background: #991b1b; }
+.tag[data-location="lebanon"] { background: #16a34a; }
+.tag[data-location="lesotho"] { background: #1e3a8a; }
+.tag[data-location="liberia"] { background: #dc2626; }
+.tag[data-location="libya"] { background: #16a34a; }
+.tag[data-location="liechtenstein"] { background: #1e40af; }
+.tag[data-location="lithuania"] { background: #f59e0b; }
+.tag[data-location="luxembourg"] { background: #38bdf8; }
+.tag[data-location="madagascar"] { background: #dc2626; }
+.tag[data-location="malawi"] { background: #b91c1c; }
+.tag[data-location="malaysia"] { background: #f59e0b; }
+.tag[data-location="maldives"] { background: #0ea5e9; }
+.tag[data-location="mali"] { background: #16a34a; }
+.tag[data-location="malta"] { background: #dc2626; }
+.tag[data-location="marshall_islands"] { background: #0ea5e9; }
+.tag[data-location="mauritania"] { background: #16a34a; }
+.tag[data-location="mauritius"] { background: #1e3a8a; }
+.tag[data-location="mexico"] { background: #16a34a; }
+.tag[data-location="micronesia"] { background: #0ea5e9; }
+.tag[data-location="moldova"] { background: #f59e0b; }
+.tag[data-location="monaco"] { background: #dc2626; }
+.tag[data-location="mongolia"] { background: #1e3a8a; }
+.tag[data-location="montenegro"] { background: #dc2626; }
+.tag[data-location="morocco"] { background: #b91c1c; }
+.tag[data-location="mozambique"] { background: #f59e0b; }
+.tag[data-location="myanmar"] { background: #16a34a; }
+.tag[data-location="namibia"] { background: #1e3a8a; }
+.tag[data-location="nauru"] { background: #0ea5e9; }
+.tag[data-location="nepal"] { background: #1e40af; }
+.tag[data-location="netherlands"] { background: #f97316; }
+.tag[data-location="new_zealand"] { background: #1e3a8a; }
+.tag[data-location="nicaragua"] { background: #6b21a8; }
+.tag[data-location="niger"] { background: #16a34a; }
+.tag[data-location="nigeria"] { background: #16a34a; }
+.tag[data-location="north_korea"] { background: #1e3a8a; }
+.tag[data-location="north_macedonia"] { background: #f59e0b; }
+.tag[data-location="norway"] { background: #dc2626; }
+.tag[data-location="oman"] { background: #b91c1c; }
+.tag[data-location="pakistan"] { background: #16a34a; }
+.tag[data-location="palau"] { background: #0ea5e9; }
+.tag[data-location="panama"] { background: #dc2626; }
+.tag[data-location="papua_new_guinea"] { background: #b91c1c; }
+.tag[data-location="paraguay"] { background: #1e3a8a; }
+.tag[data-location="peru"] { background: #dc2626; }
+.tag[data-location="philippines"] { background: #1e40af; }
+.tag[data-location="poland"] { background: #dc2626; }
+.tag[data-location="portugal"] { background: #16a34a; }
+.tag[data-location="qatar"] { background: #6b21a8; }
+.tag[data-location="romania"] { background: #f59e0b; }
+.tag[data-location="russia"] { background: #1e3a8a; }
+.tag[data-location="rwanda"] { background: #16a34a; }
+.tag[data-location="saint_kitts_and_nevis"] { background: #0ea5e9; }
+.tag[data-location="saint_lucia"] { background: #38bdf8; }
+.tag[data-location="saint_vincent_and_the_grenadines"] { background: #16a34a; }
+.tag[data-location="samoa"] { background: #1e3a8a; }
+.tag[data-location="san_marino"] { background: #16a34a; }
+.tag[data-location="sao_tome_and_principe"] { background: #16a34a; }
+.tag[data-location="saudi_arabia"] { background: #16a34a; }
+.tag[data-location="senegal"] { background: #16a34a; }
+.tag[data-location="serbia"] { background: #dc2626; }
+.tag[data-location="seychelles"] { background: #0ea5e9; }
+.tag[data-location="sierra_leone"] { background: #1e3a8a; }
+.tag[data-location="singapore"] { background: #dc2626; }
+.tag[data-location="slovakia"] { background: #dc2626; }
+.tag[data-location="slovenia"] { background: #16a34a; }
+.tag[data-location="solomon_islands"] { background: #0ea5e9; }
+.tag[data-location="somalia"] { background: #38bdf8; }
+.tag[data-location="south_africa"] { background: #f59e0b; }
+.tag[data-location="south_korea"] { background: #1e3a8a; }
+.tag[data-location="south_sudan"] { background: #16a34a; }
+.tag[data-location="spain"] { background: #ca8a04; }
+.tag[data-location="sri_lanka"] { background: #6b21a8; }
+.tag[data-location="sudan"] { background: #16a34a; }
+.tag[data-location="suriname"] { background: #16a34a; }
+.tag[data-location="sweden"] { background: #f59e0b; }
+.tag[data-location="switzerland"] { background: #dc2626; }
+.tag[data-location="syria"] { background: #16a34a; }
+.tag[data-location="tajikistan"] { background: #16a34a; }
+.tag[data-location="tanzania"] { background: #16a34a; }
+.tag[data-location="thailand"] { background: #dc2626; }
+.tag[data-location="timor_leste"] { background: #f59e0b; }
+.tag[data-location="togo"] { background: #16a34a; }
+.tag[data-location="tonga"] { background: #dc2626; }
+.tag[data-location="trinidad_and_tobago"] { background: #b91c1c; }
+.tag[data-location="tunisia"] { background: #b91c1c; }
+.tag[data-location="turkey"] { background: #dc2626; }
+.tag[data-location="turkmenistan"] { background: #16a34a; }
+.tag[data-location="tuvalu"] { background: #0ea5e9; }
+.tag[data-location="uganda"] { background: #f59e0b; }
+.tag[data-location="ukraine"] { background: #38bdf8; }
+.tag[data-location="united_arab_emirates"] { background: #16a34a; }
+.tag[data-location="united_kingdom"] { background: #1e3a8a; }
+.tag[data-location="united_states"] { background: #1e40af; }
+.tag[data-location="uruguay"] { background: #38bdf8; }
+.tag[data-location="uzbekistan"] { background: #16a34a; }
+.tag[data-location="vanuatu"] { background: #0ea5e9; }
+.tag[data-location="venezuela"] { background: #f59e0b; }
+.tag[data-location="vietnam"] { background: #dc2626; }
+.tag[data-location="yemen"] { background: #b91c1c; }
+.tag[data-location="zambia"] { background: #16a34a; }
+.tag[data-location="zimbabwe"] { background: #f59e0b; }
+.tag:not([data-location]) { background: var(--color-text-secondary); }
 
 .cardImageWrapper {
   width: 100%;
-  height: 200px; /* Increased from 140px */
+  height: 200px;
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
+  background: var(--color-surface-hover);
 }
 
 .cardImage {
@@ -54,48 +271,48 @@
   object-fit: cover;
   object-position: center;
   display: block;
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-normal);
 }
 
 .card:hover .cardImage {
-  transform: scale(1.02);
+  transform: scale(1.03);
 }
 
 .cardImagePlaceholder {
   width: 100%;
   height: 100%;
-  background: #f8fafc;
+  background: var(--color-surface-hover);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  color: #94a3b8;
-  font-size: 0.85rem;
+  gap: 10px;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
   font-weight: 500;
-  border: 2px dashed #e2e8f0;
+  border: 2px dashed var(--color-border);
   margin: 12px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   height: calc(100% - 24px);
 }
 
 .placeholderIcon {
-  font-size: 2rem;
-  opacity: 0.6;
+  font-size: 2.5rem;
+  opacity: 0.5;
 }
 
 .cardContent {
-  padding: 20px;
+  padding: var(--space-lg);
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .cardTitle {
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text-primary);
   margin: 0;
   line-height: 1.4;
   overflow: hidden;
@@ -103,14 +320,13 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  letter-spacing: -0.01em;
 }
 
 .cardDescription {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--color-text-secondary);
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.6;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -121,22 +337,28 @@
 .cardMeta {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 4px;
+  gap: 10px;
+  margin-top: var(--space-sm);
 }
 
 .metaItem {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
-  color: #64748b;
+  gap: 8px;
+  font-size: 0.8125rem;
   font-weight: 500;
+  color: var(--color-text-secondary);
+  padding: 6px 10px;
+  background: var(--color-surface-hover);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
 }
 
 .metaItem svg {
-  color: #94a3b8;
+  color: var(--color-accent);
   flex-shrink: 0;
+  width: 16px;
+  height: 16px;
 }
 
 .primaryButton {
@@ -144,39 +366,40 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: #0f172a;
+  background: var(--color-primary);
   color: #ffffff;
-  padding: 12px 20px;
-  border-radius: 12px;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 600;
   margin-top: auto;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
   border: 1px solid transparent;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .primaryButton:hover {
-  background: #1e293b;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  text-decoration: none;
+  background: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .primaryButton svg {
-  transition: transform 0.2s ease;
+  width: 16px;
+  height: 16px;
+  transition: transform var(--transition-fast);
 }
 
 .primaryButton:hover svg {
-  transform: translateX(2px);
+  transform: translateX(3px);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .card {
-    max-width: 320px;
-    min-width: 260px;
+    max-width: 340px;
+    min-width: 280px;
   }
 
   .cardImageWrapper {
@@ -184,24 +407,25 @@
   }
 
   .cardContent {
-    padding: 16px;
+    padding: var(--space-md);
   }
 
   .cardTitle {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
 
   .cardDescription {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
 
   .metaItem {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
+    padding: 5px 8px;
   }
 
   .primaryButton {
-    padding: 10px 16px;
-    font-size: 0.8rem;
+    padding: 10px 20px;
+    font-size: 0.85rem;
   }
 }
 
@@ -209,7 +433,7 @@
   .card {
     max-width: 100%;
     min-width: unset;
-    margin: 0 4px;
+    margin: 0 8px;
   }
 
   .cardImageWrapper {
@@ -217,14 +441,18 @@
   }
 
   .tag {
-    top: 8px;
-    left: 8px;
-    padding: 4px 8px;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
     font-size: 0.7rem;
   }
 
   .cardContent {
-    padding: 14px;
-    gap: 10px;
+    padding: var(--space-sm);
+    gap: var(--space-sm);
+  }
+
+  .metaItem {
+    font-size: 0.7rem;
   }
 }
