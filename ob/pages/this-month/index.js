@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Clock } from 'lucide-react';
-import styles from '../styles/Home.module.css';
-import { db } from '../lib/firebase';
+import styles from '../../styles/Home.module.css';
+import { db } from '../../lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import GrantCard from '../components/GrantCard';
+import GrantCard from '../../components/GrantCard';
 
 export async function getStaticProps() {
   try {
