@@ -7,9 +7,9 @@ import { db } from '../lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import GrantCard from '../components/GrantCard';
 import Select from 'react-select';
-import { tagsOptions } from '../constants/Tags'; // Import tagsOptions
-import { locations } from '../constants/Locations'; // Import tagsOptions
-import { categories } from '../constants/Categories'; // Import tagsOptions
+import { tagsOptions } from '../constants/Tags';
+import { locations } from '../constants/Locations';
+import { categories } from '../constants/Categories';
 
 export async function getStaticProps() {
   try {
@@ -23,20 +23,56 @@ export async function getStaticProps() {
   }
 }
 
-
-
 export default function Home({ grants }) {
   const [filteredGrants, setFilteredGrants] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [selectedTags, setSelectedTags] = useState([]); // New state for tags
+  const [selectedTags, setSelectedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [featuredGrants, setFeaturedGrants] = useState([]);
+  const [showThisMonth, setShowThisMonth] = useState(false);
 
   useEffect(() => {
+    // Filter active grants
+    const activeGrants = grants.filter(grant => 
+      grant.deadline ? new Date(grant.deadline) > new Date() : true
+    );
+
+    // Randomly select featured grants from different categories
+    const getRandomGrants = () => {
+      const uniqueCategories = [...new Set(activeGrants.map(grant => grant.category))];
+      const selectedGrants = [];
+      const maxFeatured = 3;
+
+      uniqueCategories.forEach(category => {
+        const categoryGrants = activeGrants.filter(grant => grant.category === category);
+        if (categoryGrants.length > 0 && selectedGrants.length < maxFeatured) {
+          const randomIndex = Math.floor(Math.random() * categoryGrants.length);
+          selectedGrants.push(categoryGrants[randomIndex]);
+        }
+      });
+
+      while (selectedGrants.length < maxFeatured && activeGrants.length > 0) {
+        const remainingGrants = activeGrants.filter(
+          grant => !selectedGrants.some(selected => selected.id === grant.id)
+        );
+        if (remainingGrants.length > 0) {
+          const randomIndex = Math.floor(Math.random() * remainingGrants.length);
+          selectedGrants.push(remainingGrants[randomIndex]);
+        } else {
+          break;
+        }
+      }
+
+      return selectedGrants.slice(0, maxFeatured);
+    };
+
+    setFeaturedGrants(getRandomGrants());
+
+    // Apply filters for main results
     setFilteredGrants(
-      grants.filter((grant) => {
-        const isActive = grant.deadline ? new Date(grant.deadline) > new Date() : true;
+      activeGrants.filter((grant) => {
         const matchesSearch =
           (grant.title?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
           (grant.category?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
@@ -46,15 +82,24 @@ export default function Home({ grants }) {
         const matchesLocation = selectedLocation ? grant.location === selectedLocation.value : true;
         const matchesTags = selectedTags.length > 0
           ? grant.tags?.some(tag => selectedTags.some(selectedTag => selectedTag.value === tag))
-          : true; // New tag filter logic
-        return isActive && matchesSearch && matchesCategory && matchesLocation && matchesTags;
+          : true;
+        const matchesThisMonth = showThisMonth ? (() => {
+          const deadline = new Date(grant.deadline);
+          const now = new Date();
+          return deadline.getMonth() === now.getMonth() && deadline.getFullYear() === now.getFullYear();
+        })() : true;
+        return matchesSearch && matchesCategory && matchesLocation && matchesTags && matchesThisMonth;
       })
     );
     setIsLoading(false);
-  }, [grants, searchTerm, selectedCategory, selectedLocation, selectedTags]); // Add selectedTags to dependencies
+  }, [grants, searchTerm, selectedCategory, selectedLocation, selectedTags, showThisMonth]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleThisMonthClick = () => {
+    setShowThisMonth(!showThisMonth);
   };
 
   const opportunityTypes = [
@@ -68,18 +113,20 @@ export default function Home({ grants }) {
 
   const stats = [
     { icon: Award, label: 'Active Opportunities', value: filteredGrants.length },
-    { icon: Clock, label: 'This Month', value: grants.filter(g => {
-      const deadline = new Date(g.deadline);
-      const now = new Date();
-      return deadline.getMonth() === now.getMonth() && deadline.getFullYear() === now.getFullYear();
-    }).length }
+    { 
+      icon: Clock, 
+      label: 'This Month', 
+      value: grants.filter(g => {
+        const deadline = new Date(g.deadline);
+        const now = new Date();
+        return deadline.getMonth() === now.getMonth() && deadline.getFullYear() === now.getFullYear();
+      }).length,
+      onClick: handleThisMonthClick
+    }
   ];
-
-  const featuredOpportunities = grants.slice(0, 3);
 
   return (
     <div className={styles.container}>
-      {/* Hero Section */}
       <div className={styles.hero}>
         <div className={styles.heroContent}>
           <div className={styles.heroText}>
@@ -132,7 +179,6 @@ export default function Home({ grants }) {
         </div>
       </div>
 
-      {/* Featured Opportunities */}
       <div className={styles.featuredSection}>
         <div className={styles.sectionContent}>
           <div className={styles.sectionHeader}>
@@ -142,19 +188,22 @@ export default function Home({ grants }) {
             </Link>
           </div>
           <div className={styles.featuredGrid}>
-            {featuredOpportunities.map((opportunity) => (
+            {featuredGrants.map((opportunity) => (
               <GrantCard key={opportunity.id} grant={opportunity} />
             ))}
           </div>
         </div>
       </div>
 
-      {/* Stats Section */}
       <div className={styles.mainStatsSection}>
         <div className={styles.sectionContent}>
           <div className={styles.statsGrid}>
             {stats.map((stat, index) => (
-              <div key={index} className={styles.statCard}>
+              <div 
+                key={index} 
+                className={`${styles.statCard} ${stat.onClick ? styles.clickableStat : ''}`}
+                onClick={stat.onClick}
+              >
                 <div className={styles.statIcon}>
                   <stat.icon size={24} />
                 </div>
@@ -168,12 +217,11 @@ export default function Home({ grants }) {
         </div>
       </div>
 
-      {/* Results Section */}
       <div className={styles.resultsSection}>
         <div className={styles.resultsHeader}>
           <h2 className={styles.resultsTitle}>
-            {searchTerm || selectedCategory || selectedLocation || selectedTags.length > 0
-              ? `Results for "${searchTerm || 'filtered opportunities'}"`
+            {searchTerm || selectedCategory || selectedLocation || selectedTags.length > 0 || showThisMonth
+              ? `Results for "${searchTerm || (showThisMonth ? 'this month' : 'filtered opportunities')}"`
               : 'Latest Opportunities'}
           </h2>
           <div className={styles.resultsCount}>
@@ -201,7 +249,8 @@ export default function Home({ grants }) {
                   setSearchTerm('');
                   setSelectedCategory(null);
                   setSelectedLocation(null);
-                  setSelectedTags([]); // Clear tags
+                  setSelectedTags([]);
+                  setShowThisMonth(false);
                 }}
                 className={styles.clearButton}
               >
