@@ -279,3 +279,14 @@
     flex-direction: column;
   }
 }
+
+/* Add new style for clickable stat */
+.clickableStat {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clickableStat:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
