@@ -5,12 +5,12 @@ import dynamic from 'next/dynamic';
 import styles from '../../../../styles/OpportunityDetail.module.css';
 import 'react-quill/dist/quill.snow.css';
 import Select from 'react-select';
-import CreatableSelect from 'react-select/creatable'; // Import CreatableSelect for tags
+import CreatableSelect from 'react-select/creatable';
 import { db } from '../../../../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { categories } from '../../../../constants/Categories';
 import { tagsOptions } from '../../../../constants/Tags';
-import { locations } from '../../../../constants/Locations'; // Import locations
+import { locations } from '../../../../constants/Locations';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -311,7 +311,6 @@ export default function EditGrant({ grant }) {
           >
             Delete Grant
           </button>
-        </div>
         </div>
       </form>
     </div>
