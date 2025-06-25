@@ -5,24 +5,14 @@ import dynamic from 'next/dynamic';
 import styles from '../../../../styles/OpportunityDetail.module.css';
 import 'react-quill/dist/quill.snow.css';
 import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable'; // Import CreatableSelect for tags
 import { db } from '../../../../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { categories } from '../../../../constants/Categories';
 import { tagsOptions } from '../../../../constants/Tags';
+import { locations } from '../../../../constants/Locations'; // Import locations
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-
-const locations = [
-  { value: 'north_america', label: 'North America' },
-  { value: 'south_america', label: 'South America' },
-  { value: 'europe', label: 'Europe' },
-  { value: 'asia', label: 'Asia' },
-  { value: 'africa', label: 'Africa' },
-  { value: 'australia', label: 'Australia' },
-  { value: 'global', label: 'Global' },
-  { value: 'regional', label: 'Regional' },
-];
-
 
 export async function getServerSideProps({ params }) {
   const grantDoc = doc(db, 'grants', params.slug);
@@ -36,9 +26,15 @@ export async function getServerSideProps({ params }) {
       grant: {
         id: docSnap.id,
         ...grantData,
-        tags: grantData.tags.map(tag => ({ value: tag, label: tag })),
-        publishedDate: grantData.publishedDate || new Date().toISOString(),
-        deadline: grantData.deadline || new Date().toISOString(),
+        tags: grantData.tags
+          ? grantData.tags.map(tag => ({ value: tag, label: tag }))
+          : [],
+        publishedDate: grantData.publishedDate
+          ? grantData.publishedDate.toDate().toISOString()
+          : new Date().toISOString(),
+        deadline: grantData.deadline
+          ? grantData.deadline.toDate().toISOString()
+          : new Date().toISOString(),
       },
     },
   };
@@ -137,7 +133,10 @@ export default function EditGrant({ grant }) {
   };
 
   const handleSelectChange = (name) => (selected) => {
-    setForm({ ...form, [name]: name === 'tags' ? selected : selected?.value });
+    setForm({
+      ...form,
+      [name]: name === 'tags' ? selected || [] : selected?.value || '',
+    });
     setErrors({ ...errors, [name]: '' });
   };
 
@@ -227,13 +226,14 @@ export default function EditGrant({ grant }) {
         </div>
         <div className={styles.formGroup}>
           <label className={styles.label}>Tags</label>
-          <Select
+          <CreatableSelect
             isMulti
             options={tagsOptions}
             value={form.tags}
             onChange={handleSelectChange('tags')}
             className={styles.selectField}
-            placeholder="Select Tags"
+            placeholder="Select or type tags"
+            formatCreateLabel={(inputValue) => `Add "${inputValue}"`}
           />
         </div>
         <div className={styles.formGroup}>
@@ -311,6 +311,7 @@ export default function EditGrant({ grant }) {
           >
             Delete Grant
           </button>
+        </div>
         </div>
       </form>
     </div>
