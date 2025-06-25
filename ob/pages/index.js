@@ -1,356 +1,318 @@
 'use client';
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Search, ArrowRight, Clock, MapPin } from 'lucide-react';
-import styles from '../styles/Home.module.css';
-import { db } from '../lib/firebase';
-import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
-import GrantCard from '../components/GrantCard';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+import styles from '../../../../styles/OpportunityDetail.module.css';
+import 'react-quill/dist/quill.snow.css';
 import Select from 'react-select';
-import CreatableSelect from 'react-select/creatable'; // For tags
-import { tagsOptions } from '../constants/Tags';
-import { locations } from '../constants/Locations';
-import { categories } from '../constants/Categories';
-import Modal from 'react-modal'; // For filter modal
+import CreatableSelect from 'react-select/creatable';
+import { db } from '../../../../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { categories } from '../../../../constants/Categories';
+import { tagsOptions } from '../../../../constants/Tags';
+import { locations } from '../../../../constants/Locations';
 
-// Bind modal to app element for accessibility
-Modal.setAppElement('#__next');
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
-export async function getStaticProps() {
-  try {
-    const grantsCol = collection(db, 'grants');
-    const grantsSnapshot = await getDocs(grantsCol);
-    const grants = grantsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      publishedDate: doc.data().publishedDate?.toDate().toISOString(),
-      deadline: doc.data().deadline?.toDate().toISOString(),
-    }));
-    return { props: { grants }, revalidate: 60 };
-  } catch (error) {
-    console.error('Error fetching grants:', error);
-    return { props: { grants: [] }, revalidate: 60 };
+export async function getServerSideProps({ params }) {
+  const grantDoc = doc(db, 'grants', params.slug);
+  const docSnap = await getDoc(grantDoc);
+  if (!docSnap.exists()) {
+    return { notFound: true };
   }
+  const grantData = docSnap.data();
+  return {
+    props: {
+      grant: {
+        id: docSnap.id,
+        ...grantData,
+        tags: grantData.tags
+          ? grantData.tags.map(tag => ({ value: tag, label: tag }))
+          : [],
+        publishedDate: grantData.publishedDate
+          ? grantData.publishedDate.toDate().toISOString()
+          : new Date().toISOString(),
+        deadline: grantData.deadline
+          ? grantData.deadline.toDate().toISOString()
+          : new Date().toISOString(),
+      },
+    },
+  };
 }
 
-export default function Home({ grants }) {
-  const [filteredGrants, setFilteredGrants] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [featuredGrants, setFeaturedGrants] = useState([]);
-  const [showThisMonth, setShowThisMonth] = useState(false);
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [continentGrants, setContinentGrants] = useState({});
+export default function EditGrant({ grant }) {
+  const [form, setForm] = useState({
+    title: grant.title || '',
+    description: grant.description || '',
+    link: grant.link || '',
+    category: grant.category || '',
+    location: grant.location || '',
+    eligibility: grant.eligibility || '',
+    tags: grant.tags || [],
+    publishedDate: grant.publishedDate.slice(0, 16),
+    organizerName: grant.organizerName || '',
+    applicationProcess: grant.applicationProcess || '',
+    contactEmail: grant.contactEmail || '',
+    deadline: grant.deadline.slice(0, 16),
+    media: grant.media || '',
+  });
+  const [errors, setErrors] = useState({});
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    // Filter active grants
-    const activeGrants = grants.filter(grant => 
-      grant.deadline ? new Date(grant.deadline) > new Date() : true
-    );
+    const storedAuth = localStorage.getItem('adminAuthenticated');
+    if (storedAuth !== 'true') {
+      router.push('/admin');
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [router]);
 
-    // Fetch featured grants (2 random grants or fellowships, consistent for 24 hours)
-    const fetchFeaturedGrants = async () => {
-      const today = new Date().toISOString().split('T')[0];
-      const seed = parseInt(today.replace(/-/g, '')); // Deterministic seed for consistency
-      const randomGrants = activeGrants
-        .filter(grant => ['grants', 'fellowships'].includes(grant.category))
-        .sort(() => 0.5 - (seed % 1000) / 1000) // Pseudo-random sort with seed
-        .slice(0, 2);
-      setFeaturedGrants(randomGrants);
-    };
-
-    // Fetch continent-specific grants
-    const fetchContinentGrants = async () => {
-      const continentKeys = [
-        'africa', 'asia', 'australia', 'europe', 
-        'north_america', 'south_america', 'global', 'regional'
-      ];
-      const continentData = {};
-      
-      for (const continent of continentKeys) {
-        const continentQuery = query(
-          collection(db, 'grants'),
-          where('location', '==', continent),
-          where('deadline', '>', new Date()),
-          limit(2)
-        );
-        const snapshot = await getDocs(continentQuery);
-        continentData[continent] = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-          publishedDate: doc.data().publishedDate?.toDate().toISOString(),
-          deadline: doc.data().deadline?.toDate().toISOString(),
-        }));
-      }
-      setContinentGrants(continentData);
-    };
-
-    // Fetch latest grants (top 5 by publishedDate)
-    const fetchLatestGrants = async () => {
-      const latestQuery = query(
-        collection(db, 'grants'),
-        where('deadline', '>', new Date()),
-        orderBy('publishedDate', 'desc'),
-        limit(5)
-      );
-      const snapshot = await getDocs(latestQuery);
-      setFilteredGrants(
-        snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-          publishedDate: doc.data().publishedDate?.toDate().toISOString(),
-          deadline: doc.data().deadline?.toDate().toISOString(),
-        }))
-      );
-    };
-
-    const applyFilters = () => {
-      let results = activeGrants.filter((grant) => {
-        const matchesSearch =
-          (grant.title?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-          (grant.category?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-          (grant.location?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-          (grant.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())) || false);
-        const matchesCategory = selectedCategory ? grant.category === selectedCategory.value : true;
-        const matchesLocation = selectedLocation ? grant.location === selectedLocation.value : true;
-        const matchesTags = selectedTags.length > 0
-          ? grant.tags?.some(tag => selectedTags.some(selectedTag => selectedTag.value === tag))
-          : true;
-        const matchesThisMonth = showThisMonth ? (() => {
-          const deadline = new Date(grant.deadline);
-          const now = new Date();
-          return deadline.getMonth() === now.getMonth() && deadline.getFullYear() === now.getFullYear();
-        })() : true;
-        return matchesSearch && matchesCategory && matchesLocation && matchesTags && matchesThisMonth;
-      });
-
-      // If no filters are applied, show latest grants
-      if (!searchTerm && !selectedCategory && !selectedLocation && selectedTags.length === 0 && !showThisMonth) {
-        fetchLatestGrants();
-      } else {
-        setFilteredGrants(results);
-      }
-    };
-
-    fetchFeaturedGrants();
-    fetchContinentGrants();
-    applyFilters();
-    setIsLoading(false);
-  }, [grants, searchTerm, selectedCategory, selectedLocation, selectedTags, showThisMonth]);
-
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
+  const validateForm = () => {
+    const newErrors = {};
+    if (!form.title) newErrors.title = 'Title is required';
+    if (!form.description) newErrors.description = 'Description is required';
+    if (!form.link) newErrors.link = 'Link is required';
+    if (!form.category) newErrors.category = 'Category is required';
+    if (!form.location) newErrors.location = 'Location is required';
+    if (!form.eligibility) newErrors.eligibility = 'Eligibility is required';
+    if (!form.deadline) newErrors.deadline = 'Deadline is required';
+    if (!form.contactEmail) newErrors.contactEmail = 'Contact Email is required';
+    return newErrors;
   };
 
-  const handleSearchSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Trigger filter application (already handled in useEffect)
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+    try {
+      const res = await fetch(`/api/grants/${grant.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          tags: form.tags.map(tag => tag.value),
+          updatedAt: new Date().toISOString(),
+        }),
+      });
+      if (res.ok) {
+        router.push('/admin');
+      } else {
+        console.error('Failed to update grant');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
-  const handleThisMonthClick = () => {
-    setShowThisMonth(!showThisMonth);
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(`/api/grants/${grant.id}`, { method: 'DELETE' });
+      if (res.ok) {
+        router.push('/admin');
+      } else {
+        console.error('Failed to delete grant');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
-  const stats = [
-    { icon: Clock, label: 'This Month', value: grants.filter(g => {
-      const deadline = new Date(g.deadline);
-      const now = new Date();
-      return deadline.getMonth() === now.getMonth() && deadline.getFullYear() === now.getFullYear();
-    }).length, onClick: handleThisMonthClick },
-    { icon: MapPin, label: 'Total Active Opportunities', value: grants.filter(g => 
-      g.deadline ? new Date(g.deadline) > new Date() : true
-    ).length },
-  ];
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' });
+  };
+
+  const handleQuillChange = (name) => (value) => {
+    setForm({ ...form, [name]: value });
+    setErrors({ ...errors, [name]: '' });
+  };
+
+  const handleSelectChange = (name) => (selected) => {
+    setForm({
+      ...form,
+      [name]: name === 'tags' ? selected || [] : selected?.value || '',
+    });
+    setErrors({ ...errors, [name]: '' });
+  };
+
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link', 'image'],
+      ['clean'],
+    ],
+  };
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className={styles.container}>
-      <div className={styles.hero}>
-        <div className={styles.heroContent}>
-          <div className={styles.heroText}>
-            <h1 className={styles.heroTitle}>Discover Opportunities</h1>
-            <div className={styles.searchSection}>
-              <form onSubmit={handleSearchSubmit} className={styles.searchWrapper}>
-                <Search className={styles.searchIcon} size={20} />
-                <input
-                  type="text"
-                  placeholder="Search opportunities..."
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  className={styles.searchInput}
-                />
-                <button type="submit" className={styles.searchButton}>Search</button>
-              </form>
-              <button
-                onClick={() => setIsFilterModalOpen(true)}
-                className={styles.filterButton}
-              >
-                Filter
-              </button>
-              <Modal
-                isOpen={isFilterModalOpen}
-                onRequestClose={() => setIsFilterModalOpen(false)}
-                className={styles.filterModal}
-                overlayClassName={styles.modalOverlay}
-              >
-                <h2>Filter Opportunities</h2>
-                <div className={styles.filterModalContent}>
-                  <Select
-                    options={categories}
-                    value={selectedCategory}
-                    onChange={setSelectedCategory}
-                    placeholder="Filter by Category"
-                    className={styles.selectField}
-                  />
-                  <Select
-                    options={locations}
-                    value={selectedLocation}
-                    onChange={setSelectedLocation}
-                    placeholder="Filter by Location"
-                    className={styles.selectField}
-                  />
-                  <CreatableSelect
-                    isMulti
-                    options={tagsOptions}
-                    value={selectedTags}
-                    onChange={setSelectedTags}
-                    placeholder="Filter by Tags"
-                    className={styles.selectField}
-                    formatCreateLabel={(inputValue) => `Add "${inputValue}"`}
-                  />
-                </div>
-                <div className={styles.modalButtons}>
-                  <button
-                    onClick={() => setIsFilterModalOpen(false)}
-                    className={styles.modalButton}
-                  >
-                    Apply Filters
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedCategory(null);
-                      setSelectedLocation(null);
-                      setSelectedTags([]);
-                      setIsFilterModalOpen(false);
-                    }}
-                    className={styles.modalButton}
-                  >
-                    Clear Filters
-                  </button>
-                </div>
-              </Modal>
-            </div>
-            <div className={styles.statsSection}>
-              <div className={styles.statsGrid}>
-                {stats.map((stat, index) => (
-                  <div 
-                    key={index} 
-                    className={`${styles.statCard} ${stat.onClick ? styles.clickableStat : ''}`}
-                    onClick={stat.onClick}
-                  >
-                    <div className={styles.statIcon}>
-                      <stat.icon size={24} />
-                    </div>
-                    <div className={styles.statContent}>
-                      <div className={styles.statValue}>{stat.value}</div>
-                      <div className={styles.statLabel}>{stat.label}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+      <h1 className={styles.title}>Edit Grant</h1>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Title *</label>
+          <input
+            type="text"
+            name="title"
+            placeholder="Title"
+            value={form.title}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+          {errors.title && <p className={styles.errorText}>{errors.title}</p>}
         </div>
-      </div>
-
-      <div className={styles.featuredSection}>
-        <div className={styles.sectionContent}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Featured Opportunities</h2>
-            <Link href="/grants" className={styles.sectionLink}>
-              View All <ArrowRight size={16} />
-            </Link>
-          </div>
-          <div className={styles.featuredGrid}>
-            {featuredGrants.map((opportunity) => (
-              <GrantCard key={opportunity.id} grant={opportunity} />
-            ))}
-          </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Description *</label>
+          <ReactQuill
+            value={form.description}
+            onChange={handleQuillChange('description')}
+            modules={quillModules}
+            className={styles.quillEditor}
+          />
+          {errors.description && <p className={styles.errorText}>{errors.description}</p>}
         </div>
-      </div>
-
-      <div className={styles.resultsSection}>
-        <div className={styles.resultsHeader}>
-          <h2 className={styles.resultsTitle}>
-            {searchTerm || selectedCategory || selectedLocation || selectedTags.length > 0 || showThisMonth
-              ? `Results for "${searchTerm || (showThisMonth ? 'this month' : 'filtered opportunities')}"`
-              : 'Latest Opportunities'}
-          </h2>
-          <div className={styles.resultsCount}>
-            {isLoading ? (
-              <span className={styles.loadingText}>Loading...</span>
-            ) : (
-              <span className={styles.countText}>
-                {filteredGrants.length} {filteredGrants.length === 1 ? 'opportunity' : 'opportunities'}
-              </span>
-            )}
-          </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Link *</label>
+          <input
+            type="url"
+            name="link"
+            placeholder="Link"
+            value={form.link}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+          {errors.link && <p className={styles.errorText}>{errors.link}</p>}
         </div>
-        <div className={styles.grid}>
-          {isLoading ? (
-            <div className={styles.loadingGrid}>
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className={styles.skeletonCard}></div>
-              ))}
-            </div>
-          ) : filteredGrants.length === 0 ? (
-            <div className={styles.noResults}>
-              <h3 className={styles.noResultsTitle}>No opportunities found</h3>
-              <button
-                onClick={() => {
-                  setSearchTerm('');
-                  setSelectedCategory(null);
-                  setSelectedLocation(null);
-                  setSelectedTags([]);
-                  setShowThisMonth(false);
-                }}
-                className={styles.clearButton}
-              >
-                Clear Filters
-              </button>
-            </div>
-          ) : (
-            filteredGrants.map((grant) => (
-              <GrantCard key={grant.id} grant={grant} />
-            ))
-          )}
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Category *</label>
+          <Select
+            options={categories}
+            value={categories.find(c => c.value === form.category)}
+            onChange={handleSelectChange('category')}
+            className={styles.selectField}
+            placeholder="Select Category"
+          />
+          {errors.category && <p className={styles.errorText}>{errors.category}</p>}
         </div>
-      </div>
-
-      {Object.keys(continentGrants).map(continent => (
-        <div key={continent} className={styles.continentSection}>
-          <div className={styles.sectionContent}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>
-                Grants from {locations.find(l => l.value === continent)?.label || continent}
-              </h2>
-              <Link
-                href={`/grants?location=${continent}`}
-                className={styles.sectionLink}
-              >
-                View More <ArrowRight size={16} />
-              </Link>
-            </div>
-            <div className={styles.featuredGrid}>
-              {continentGrants[continent].map((grant) => (
-                <GrantCard key={grant.id} grant={grant} />
-              ))}
-            </div>
-          </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Location *</label>
+          <Select
+            options={locations}
+            value={locations.find(l => l.value === form.location)}
+            onChange={handleSelectChange('location')}
+            className={styles.selectField}
+            placeholder="Select Location"
+          />
+          {errors.location && <p className={styles.errorText}>{errors.location}</p>}
         </div>
-      ))}
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Eligibility *</label>
+          <ReactQuill
+            value={form.eligibility}
+            onChange={handleQuillChange('eligibility')}
+            modules={quillModules}
+            className={styles.quillEditor}
+          />
+          {errors.eligibility && <p className={styles.errorText}>{errors.eligibility}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Tags</label>
+          <CreatableSelect
+            isMulti
+            options={tagsOptions}
+            value={form.tags}
+            onChange={handleSelectChange('tags')}
+            className={styles.selectField}
+            placeholder="Select or type tags"
+            formatCreateLabel={(inputValue) => `Add "${inputValue}"`}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Published Date</label>
+          <input
+            type="datetime-local"
+            name="publishedDate"
+            value={form.publishedDate}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Organizer Name</label>
+          <input
+            type="text"
+            name="organizerName"
+            placeholder="Organizer Name"
+            value={form.organizerName}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Application Process</label>
+          <ReactQuill
+            value={form.applicationProcess}
+            onChange={handleQuillChange('applicationProcess')}
+            modules={quillModules}
+            className={styles.quillEditor}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Contact Email *</label>
+          <input
+            type="email"
+            name="contactEmail"
+            placeholder="Contact Email"
+            value={form.contactEmail}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+          {errors.contactEmail && <p className={styles.errorText}>{errors.contactEmail}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Deadline *</label>
+          <input
+            type="datetime-local"
+            name="deadline"
+            value={form.deadline}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+          {errors.deadline && <p className={styles.errorText}>{errors.deadline}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Media URL</label>
+          <input
+            type="url"
+            name="media"
+            placeholder="Media URL"
+            value={form.media}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+        </div>
+        <div className={styles.buttonGroup}>
+          <button type="submit" className={styles.primaryButton}>
+            Update Grant
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            className={styles.deleteButton}
+          >
+            Delete Grant
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
