@@ -12,13 +12,19 @@ export default async function handler(req, res) {
       if (!docSnap.exists()) {
         return res.status(404).json({ error: 'Not found' });
       }
-      const grant = { id: docSnap.id, ...docSnap.data() };
+      const grant = {
+        id: docSnap.id,
+        ...docSnap.data(),
+        publishedDate: docSnap.data().publishedDate?.toDate?.()?.toISOString?.() || new Date().toISOString(),
+        deadline: docSnap.data().deadline?.toDate?.()?.toISOString?.() || new Date().toISOString(),
+      };
       if (new Date(grant.deadline) < new Date()) {
         return res.status(410).json({ error: 'Grant expired' });
       }
       res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
       res.status(200).json(grant);
     } catch (error) {
+      console.error('Error fetching grant:', error);
       res.status(500).json({ error: 'Server error' });
     }
   } else if (req.method === 'PUT') {
@@ -48,17 +54,18 @@ export default async function handler(req, res) {
         location,
         eligibility,
         tags: Array.isArray(tags) ? tags : [],
-        publishedDate,
+        publishedDate: new Date(publishedDate),
         organizerName: organizerName || '',
         applicationProcess: applicationProcess || '',
         contactEmail,
-        deadline,
+        deadline: new Date(deadline),
         media: media || '',
-        updatedAt: updatedAt || new Date().toISOString(),
+        updatedAt: new Date(updatedAt || new Date()),
       };
       await updateDoc(grantDoc, updatedGrant);
       res.status(200).json({ id, ...updatedGrant });
     } catch (error) {
+      console.error('Error updating grant:', error);
       res.status(500).json({ error: 'Server error' });
     }
   } else if (req.method === 'DELETE') {
@@ -66,6 +73,7 @@ export default async function handler(req, res) {
       await deleteDoc(grantDoc);
       res.status(204).end();
     } catch (error) {
+      console.error('Error deleting grant:', error);
       res.status(500).json({ error: 'Server error' });
     }
   } else {
