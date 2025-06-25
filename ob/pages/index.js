@@ -2,11 +2,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import styles from '../../../../styles/OpportunityDetail.module.css';
+import styles from '../styles/OpportunityDetail.module.css';
 import 'react-quill/dist/quill.snow.css';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import { db } from '../../../../lib/firebase';
+import { db } from '../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { categories } from '../constants/Categories';
 import { tagsOptions } from '../constants/Tags';
