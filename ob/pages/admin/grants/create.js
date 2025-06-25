@@ -5,15 +5,12 @@ import dynamic from 'next/dynamic';
 import styles from '../../../styles/OpportunityDetail.module.css';
 import 'react-quill/dist/quill.snow.css';
 import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable'; // Import CreatableSelect for tags
 import { categories } from '../../../constants/Categories';
-import { tagsOptions } from '../../../constants/Tags';
 import { locations } from '../../../constants/Locations';
+import { tagsOptions } from '../../../constants/Tags';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-
-
-
-
 
 export default function CreateGrant() {
   const [form, setForm] = useState({
@@ -67,7 +64,7 @@ export default function CreateGrant() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          tags: form.tags.map(tag => tag.value),
+          tags: form.tags.map(tag => tag.value), // Map tags to their values
           publishedDate: form.publishedDate || new Date().toISOString(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -94,7 +91,10 @@ export default function CreateGrant() {
   };
 
   const handleSelectChange = (name) => (selected) => {
-    setForm({ ...form, [name]: name === 'tags' ? selected : selected?.value });
+    setForm({
+      ...form,
+      [name]: name === 'tags' ? selected || [] : selected?.value || '',
+    });
     setErrors({ ...errors, [name]: '' });
   };
 
@@ -150,7 +150,7 @@ export default function CreateGrant() {
           <label className={styles.label}>Category *</label>
           <Select
             options={categories}
-            value={categories.find(c => c.value === form.category)}
+            value={categories.find((c) => c.value === form.category)}
             onChange={handleSelectChange('category')}
             className={styles.selectField}
             placeholder="Select Category"
@@ -161,7 +161,7 @@ export default function CreateGrant() {
           <label className={styles.label}>Location *</label>
           <Select
             options={locations}
-            value={locations.find(l => l.value === form.location)}
+            value={locations.find((l) => l.value === form.location)}
             onChange={handleSelectChange('location')}
             className={styles.selectField}
             placeholder="Select Location"
@@ -180,13 +180,14 @@ export default function CreateGrant() {
         </div>
         <div className={styles.formGroup}>
           <label className={styles.label}>Tags</label>
-          <Select
+          <CreatableSelect
             isMulti
             options={tagsOptions}
             value={form.tags}
             onChange={handleSelectChange('tags')}
             className={styles.selectField}
-            placeholder="Select Tags"
+            placeholder="Select or type tags"
+            formatCreateLabel={(inputValue) => `Add "${inputValue}"`}
           />
         </div>
         <div className={styles.formGroup}>
