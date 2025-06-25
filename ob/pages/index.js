@@ -292,4 +292,105 @@ export default function Home({ grants }) {
                   >
                     <div className={styles.statIcon}>
                       <stat.icon size={24} />
-                    </div
+                    </div>
+                    <div className={styles.statContent}>
+                      <div className={styles.statValue}>{stat.value}</div>
+                      <div className={styles.statLabel}>{stat.label}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.featuredSection}>
+        <div className={styles.sectionContent}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Featured Opportunities</h2>
+            <Link href="/grants" className={styles.sectionLink}>
+              View All <ArrowRight size={16} />
+            </Link>
+          </div>
+          <div className={styles.featuredGrid}>
+            {featuredGrants.map((opportunity) => (
+              <GrantCard key={opportunity.id} grant={opportunity} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.resultsSection}>
+        <div className={styles.resultsHeader}>
+          <h2 className={styles.resultsTitle}>
+            {searchTerm || selectedCategory || selectedLocation || selectedTags.length > 0 || showThisMonth
+              ? `Results for "${searchTerm || (showThisMonth ? 'this month' : 'filtered opportunities')}"`
+              : 'Latest Opportunities'}
+          </h2>
+          <div className={styles.resultsCount}>
+            {isLoading ? (
+              <span className={styles.loadingText}>Loading...</span>
+            ) : (
+              <span className={styles.countText}>
+                {filteredGrants.length} {filteredGrants.length === 1 ? 'opportunity' : 'opportunities'}
+              </span>
+            )}
+          </div>
+        </div>
+        <div className={styles.grid}>
+          {isLoading ? (
+            <div className={styles.loadingGrid}>
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className={styles.skeletonCard}></div>
+              ))}
+            </div>
+          ) : filteredGrants.length === 0 ? (
+            <div className={styles.noResults}>
+              <h3 className={styles.noResultsTitle}>No opportunities found</h3>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedCategory(null);
+                  setSelectedLocation(null);
+                  setSelectedTags([]);
+                  setShowThisMonth(false);
+                }}
+                className={styles.clearButton}
+              >
+                Clear Filters
+              </button>
+            </div>
+          ) : (
+            filteredGrants.map((grant) => (
+              <GrantCard key={grant.id} grant={grant} />
+            ))
+          )}
+        </div>
+      </div>
+
+      {Object.keys(continentGrants).map(continent => (
+        <div key={continent} className={styles.continentSection}>
+          <div className={styles.sectionContent}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>
+                Grants from {locations.find(l => l.value === continent)?.label || continent}
+              </h2>
+              <Link
+                href={`/grants?location=${continent}`}
+                className={styles.sectionLink}
+              >
+                View More <ArrowRight size={16} />
+              </Link>
+            </div>
+            <div className={styles.featuredGrid}>
+              {continentGrants[continent]?.map((grant) => (
+                <GrantCard key={grant.id} grant={grant} />
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
