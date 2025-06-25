@@ -8,9 +8,9 @@ import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { db } from '../../../../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { categories } from '../../../../constants/Categories';
-import { tagsOptions } from '../../../../constants/Tags';
-import { locations } from '../../../../constants/Locations';
+import { categories } from '../constants/Categories';
+import { tagsOptions } from '../constants/Tags';
+import { locations } from '../constants/Locations';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
